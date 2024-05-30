@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://6hr5h3xt5ccb"]
+
+[ext_resource type="Script" path="res://Scripts/Item.cs" id="1_ocdnd"]
+[ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="2_x4m2y"]
+
+[node name="Item" type="HBoxContainer" node_paths=PackedStringArray("NameLabel", "PriceLabel")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ocdnd")
+NameLabel = NodePath("Name/Label")
+PriceLabel = NodePath("Price/Label")
+
+[node name="Name" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="Label" type="Label" parent="Name"]
+layout_mode = 2
+text = "Name
+"
+label_settings = ExtResource("2_x4m2y")
+
+[node name="Price" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Price"]
+layout_mode = 2
+text = "Price
+"
+label_settings = ExtResource("2_x4m2y")
+clip_text = true
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
