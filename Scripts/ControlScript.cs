@@ -32,6 +32,15 @@ public partial class ControlScript : Control
         itemListScroll.ScrollVertical = (int)itemListScroll.GetVScrollBar().MaxValue;
     }
 
+    void DeleteSelectedItems()
+    {
+        var items = GetTree().GetNodesInGroup("SelectedItems");
+        foreach (Node item in items)
+        {
+            item.QueueFree();
+        }
+    }
+
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
@@ -39,6 +48,10 @@ public partial class ControlScript : Control
         if (Input.IsActionJustPressed("A"))
         {
             AddItem();
+        }
+        if (Input.IsActionJustPressed("Q"))
+        {
+            DeleteSelectedItems();
         }
 
     }

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Text.RegularExpressions;
 
 public partial class Item : Control
 {
@@ -34,8 +35,14 @@ public partial class Item : Control
         if (selected)
         {
             color.A = 1f;
+            AddToGroup("SelectedItems");
+        }
+        else
+        {
+            RemoveFromGroup("SelectedItems");
         }
         stylebox.BgColor = color;
+
     }
 
     public void SetName(String name)
@@ -53,8 +60,4 @@ public partial class Item : Control
         return Convert.ToSingle(PriceLabel.Text.Replace("$", ""));
     }
 
-    // // Called every frame. 'delta' is the elapsed time since the previous frame.
-    // public override void _Process(double delta)
-    // {
-    // }
 }
