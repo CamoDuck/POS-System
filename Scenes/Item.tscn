@@ -1,40 +1,50 @@
-[gd_scene load_steps=3 format=3 uid="uid://6hr5h3xt5ccb"]
+[gd_scene load_steps=4 format=3 uid="uid://6hr5h3xt5ccb"]
 
 [ext_resource type="Script" path="res://Scripts/Item.cs" id="1_ocdnd"]
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="2_x4m2y"]
 
-[node name="Item" type="HBoxContainer" node_paths=PackedStringArray("NameLabel", "PriceLabel")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mkldc"]
+bg_color = Color(0.890196, 0.913725, 0.270588, 0)
+
+[node name="Item" type="PanelContainer" node_paths=PackedStringArray("NameLabel", "PriceLabel")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mkldc")
 script = ExtResource("1_ocdnd")
-NameLabel = NodePath("Name/Label")
-PriceLabel = NodePath("Price/Label")
+NameLabel = NodePath("HBoxContainer/Name/Label")
+PriceLabel = NodePath("HBoxContainer/Price/Label")
 
-[node name="Name" type="MarginContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Name" type="MarginContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 4.0
 
-[node name="Label" type="Label" parent="Name"]
+[node name="Label" type="Label" parent="HBoxContainer/Name"]
 layout_mode = 2
 text = "Name
 "
 label_settings = ExtResource("2_x4m2y")
 
-[node name="Price" type="MarginContainer" parent="."]
+[node name="Price" type="MarginContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="Price"]
+[node name="Label" type="Label" parent="HBoxContainer/Price"]
 layout_mode = 2
 text = "Price
 "
 label_settings = ExtResource("2_x4m2y")
 clip_text = true
 
-[node name="Control" type="Control" parent="."]
+[node name="Control" type="Control" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[connection signal="gui_input" from="." to="." method="OnGuiInput"]

@@ -3,12 +3,40 @@ using System;
 
 public partial class Item : Control
 {
+    public ControlScript control;
     [Export] Label NameLabel;
     [Export] Label PriceLabel;
 
-    // public override void _Ready()
-    // {
-    // }
+    StyleBoxFlat stylebox;
+
+    bool selected = false;
+    Color defaultColor = new Color(0.9f, 0.9f, 0f, 0f);
+
+    public override void _Ready()
+    {
+        stylebox = new StyleBoxFlat();
+        stylebox.BgColor = defaultColor;
+        AddThemeStyleboxOverride("panel", stylebox);
+    }
+
+    public void OnGuiInput(InputEvent e)
+    {
+        if (e is InputEventMouseButton mouseEvent && !mouseEvent.Pressed)
+        {
+            onClicked();
+        }
+    }
+
+    void onClicked()
+    {
+        Color color = defaultColor;
+        selected = !selected;
+        if (selected)
+        {
+            color.A = 1f;
+        }
+        stylebox.BgColor = color;
+    }
 
     public void SetName(String name)
     {
