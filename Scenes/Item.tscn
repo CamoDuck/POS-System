@@ -5,6 +5,8 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mkldc"]
 bg_color = Color(0.890196, 0.913725, 0.270588, 0)
+border_width_bottom = 5
+border_color = Color(0.412152, 0.412152, 0.412152, 1)
 
 [node name="Item" type="PanelContainer" node_paths=PackedStringArray("NameLabel", "PriceLabel")]
 anchors_preset = 15

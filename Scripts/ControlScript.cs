@@ -7,6 +7,8 @@ public partial class ControlScript : Control
     [Export] public ScrollContainer itemListScroll;
     [Export] public Label totalLabel;
 
+    [Export] Control barcodeInput;
+
     [Export] PackedScene item;
 
     RandomNumberGenerator rng = new RandomNumberGenerator();
@@ -16,13 +18,18 @@ public partial class ControlScript : Control
     {
     }
 
+    public void _OnBarcode(string barcode)
+    {
+        AddItem(barcode);
+    }
 
-    async void AddItem()
+
+    async void AddItem(string barcodeID)
     {
         var clone = item.Instantiate();
         Item cloneScript = (Item)clone;
 
-        cloneScript.SetName("Item!!");
+        cloneScript.SetName(barcodeID);
         float randNum = Mathf.Round(rng.Randf() * Mathf.Pow(10.0f, 5)) / Mathf.Pow(10.0f, 2);
         cloneScript.SetPrice(randNum);
         itemList.AddChild(clone);
@@ -45,10 +52,6 @@ public partial class ControlScript : Control
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
-        if (Input.IsActionJustPressed("A"))
-        {
-            AddItem();
-        }
         if (Input.IsActionJustPressed("Q"))
         {
             DeleteSelectedItems();
