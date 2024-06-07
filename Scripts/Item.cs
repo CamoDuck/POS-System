@@ -12,6 +12,7 @@ public partial class Item : Control
 
     bool selected = false;
     Color defaultColor = new Color(0.9f, 0.9f, 0f, 0f);
+    decimal price;
 
     public override void _Ready()
     {
@@ -45,19 +46,20 @@ public partial class Item : Control
 
     }
 
-    public void SetName(String name)
+    public void SetName(string name)
     {
         NameLabel.Text = name;
     }
 
-    public void SetPrice(float price)
+    public void SetPrice(decimal p)
     {
-        PriceLabel.Text = String.Format("{0:C}", price);
+        PriceLabel.Text = string.Format("{0:C}", p);
+        price = p;
     }
 
-    public float GetPrice()
+    public decimal GetPrice()
     {
-        return Convert.ToSingle(PriceLabel.Text.Replace("$", ""));
+        return price;
     }
 
 }

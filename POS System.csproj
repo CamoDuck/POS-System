@@ -6,4 +6,9 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>POSSystem</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
+  </ItemGroup>
 </Project>

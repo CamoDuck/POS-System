@@ -15,11 +15,6 @@ public partial class BarcodeInput : Control
 
     StringBuilder inputBuffer = new StringBuilder();
 
-    public override void _Ready()
-    {
-    }
-
-
     public override void _Input(InputEvent @event)
     {
         if (@event is InputEventKey keyEvent && @event.IsPressed())

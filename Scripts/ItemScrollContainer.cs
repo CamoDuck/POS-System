@@ -25,7 +25,7 @@ public partial class ItemScrollContainer : ScrollContainer
 
     void UpdateTotalLabel()
     {
-        float total = 0;
+        decimal total = 0;
         var itemLabels = itemList.GetChildren();
         foreach (Item item in itemLabels)
         {
