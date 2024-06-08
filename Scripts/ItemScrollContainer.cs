@@ -29,10 +29,10 @@ public partial class ItemScrollContainer : ScrollContainer
         var itemLabels = itemList.GetChildren();
         foreach (Item item in itemLabels)
         {
-            total += item.GetPrice();
+            total += item.GetTotalPrice();
         }
 
-        totalLabel.Text = String.Format("{0:C}", total);
+        totalLabel.Text = $"Total : {String.Format("{0:C}", total)}";
     }
 
 

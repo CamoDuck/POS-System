@@ -7,12 +7,19 @@ public partial class Item : Control
     public ControlScript control;
     [Export] Label NameLabel;
     [Export] Label PriceLabel;
+    [Export] Label GSTLabel;
+    [Export] Label PSTLabel;
 
     StyleBoxFlat stylebox;
 
     bool selected = false;
     Color defaultColor = new Color(0.9f, 0.9f, 0f, 0f);
-    decimal price;
+
+    decimal originalPrice;
+    bool gstEnabled = false;
+    bool pstEnabled = false;
+    bool environmentalFeeEnabled = false;
+    bool bottleDepositFeeEnabled = false;
 
     public override void _Ready()
     {
@@ -54,12 +61,53 @@ public partial class Item : Control
     public void SetPrice(decimal p)
     {
         PriceLabel.Text = string.Format("{0:C}", p);
-        price = p;
+        originalPrice = p;
     }
 
-    public decimal GetPrice()
+    public void SetGST(bool value)
     {
-        return price;
+        gstEnabled = value;
+        if (gstEnabled)
+        {
+            GSTLabel.Show();
+        }
+        else
+        {
+            GSTLabel.Hide();
+        }
+    }
+
+    public void SetPST(bool value)
+    {
+        pstEnabled = value;
+        if (pstEnabled)
+        {
+            PSTLabel.Show();
+        }
+        else
+        {
+            PSTLabel.Hide();
+        }
+    }
+
+    public void SetEnviromentalFee(bool value)
+    {
+        environmentalFeeEnabled = value;
+    }
+
+    public void SetBottleDepositFee(bool value)
+    {
+        bottleDepositFeeEnabled = value;
+    }
+
+    public decimal GetOriginalPrice()
+    {
+        return originalPrice;
+    }
+
+    public decimal GetTotalPrice()
+    {
+        return Global.CalculateTotal(originalPrice, gstEnabled, pstEnabled, environmentalFeeEnabled, bottleDepositFeeEnabled);
     }
 
 }

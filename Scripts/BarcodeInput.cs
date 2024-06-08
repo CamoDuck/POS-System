@@ -1,11 +1,6 @@
 using Godot;
 using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Tracing;
-using System.Linq;
-using System.Security.Cryptography;
+using System.IO.Ports;
 
 public partial class BarcodeInput : Control
 {
@@ -13,37 +8,27 @@ public partial class BarcodeInput : Control
 
     [Export] public LineEdit barcodeInput;
 
-    StringBuilder inputBuffer = new StringBuilder();
 
-    public override void _Input(InputEvent @event)
+    private SerialPort port = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);
+
+    public override void _Ready()
     {
-        if (@event is InputEventKey keyEvent && @event.IsPressed())
-        {
-            string key = OS.GetKeycodeString(keyEvent.Keycode);
-            inputBuffer.Append(key);
-        }
+        // Attach a method to be called when there
+        // is data waiting in the port's buffer 
+        port.DataReceived += new SerialDataReceivedEventHandler(_OnPortDataReceived);
+        // Begin communications 
+        port.Open();
+    }
+    public override void _ExitTree()
+    {
+        port.Close();
     }
 
-    public override void _Process(double delta)
+    void _OnPortDataReceived(object sender, SerialDataReceivedEventArgs e)
     {
-        if (Input.IsActionJustPressed("StartBarcode"))
-        {
-            barcodeInput.GrabFocus();
-            barcodeInput.Text = "";
-            Show();
-        }
-        else if (Input.IsActionJustPressed("EndBarcode"))
-        {
-            EmitSignal(SignalName.BarcodeRead, inputBuffer.ToString().Replace("F1", "").Replace("Enter", ""));
-            Hide();
-            inputBuffer.Clear();
-        }
-
-    }
-
-    public string GetBarcode()
-    {
-        return barcodeInput.Text;
+        // Show all the incoming data in the port's buffer
+        string barcode = port.ReadExisting();
+        CallDeferred("emit_signal", SignalName.BarcodeRead, barcode);
     }
 
 }
