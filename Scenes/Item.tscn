@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://6hr5h3xt5ccb"]
+[gd_scene load_steps=5 format=3 uid="uid://6hr5h3xt5ccb"]
 
 [ext_resource type="Script" path="res://Scripts/Item.cs" id="1_ocdnd"]
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="2_x4m2y"]
@@ -8,7 +8,11 @@ bg_color = Color(0.890196, 0.913725, 0.270588, 0)
 border_width_bottom = 5
 border_color = Color(0.412152, 0.412152, 0.412152, 1)
 
-[node name="Item" type="PanelContainer" node_paths=PackedStringArray("NameLabel", "PriceLabel", "GSTLabel", "PSTLabel")]
+[sub_resource type="LabelSettings" id="LabelSettings_anfx2"]
+font_size = 25
+font_color = Color(0, 0.411765, 0.192157, 1)
+
+[node name="Item" type="PanelContainer" node_paths=PackedStringArray("NameLabel", "PriceLabel", "GSTLabel", "PSTLabel", "QuantityLabel")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,6 +24,7 @@ NameLabel = NodePath("HBoxContainer/Name/Label")
 PriceLabel = NodePath("HBoxContainer/Price/Label")
 GSTLabel = NodePath("HBoxContainer/HBoxContainer2/Control/GST")
 PSTLabel = NodePath("HBoxContainer/HBoxContainer2/Control2/PST")
+QuantityLabel = NodePath("HBoxContainer/Quantity/Label")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -47,6 +52,17 @@ text = "Price
 label_settings = ExtResource("2_x4m2y")
 horizontal_alignment = 2
 clip_text = true
+
+[node name="Quantity" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.75
+mouse_filter = 0
+
+[node name="Label" type="Label" parent="HBoxContainer/Quantity"]
+layout_mode = 2
+text = "x10"
+label_settings = SubResource("LabelSettings_anfx2")
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
@@ -84,3 +100,4 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.25
 
 [connection signal="gui_input" from="." to="." method="OnGuiInput"]
+[connection signal="gui_input" from="HBoxContainer/Quantity" to="." method="_OnQuantityClicked"]

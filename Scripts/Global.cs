@@ -20,13 +20,13 @@ public static class Global
     static readonly decimal BOTTLE_DEPOSIT_FEE = 0.10m;
 
 
-    public static decimal CalculateTotal(decimal originalPrice, decimal discountPercent, bool isGST, bool isPST, bool isEnvironmentalFee, bool isBottleDepositFee)
+    public static decimal CalculateTotal(int quantity, decimal originalPrice, decimal discountPercent, bool isGST, bool isPST, bool isEnvironmentalFee, bool isBottleDepositFee)
     {
         decimal newPrice = originalPrice * (1 - discountPercent);
-        return CalculateTotal(newPrice, isGST, isPST, isEnvironmentalFee, isBottleDepositFee);
+        return CalculateTotal(quantity, newPrice, isGST, isPST, isEnvironmentalFee, isBottleDepositFee);
     }
 
-    public static decimal CalculateTotal(decimal originalPrice, bool isGST, bool isPST, bool isEnvironmentalFee, bool isBottleDepositFee)
+    public static decimal CalculateTotal(int quantity, decimal originalPrice, bool isGST, bool isPST, bool isEnvironmentalFee, bool isBottleDepositFee)
     {
         decimal gst = isGST ? originalPrice * GST_PRECENT : 0;
         decimal pst = isPST ? originalPrice * PST_PRECENT : 0;
@@ -34,7 +34,8 @@ public static class Global
         decimal bottleDepositFee = isBottleDepositFee ? BOTTLE_DEPOSIT_FEE : 0;
 
         decimal total = originalPrice + gst + pst + environmentalFee + bottleDepositFee;
-        return total;
+        decimal multipliedTotal = total * quantity;
+        return multipliedTotal;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -162,6 +163,15 @@ public static class Global
             VALUES ('{barcode}', '{name}', {price}, {quantity}, '{type}', {gst}, {pst}, {environmentalFee}, {bottleDepositFee}) ;";
         SqliteCommand command = new SqliteCommand(sql, dbConnection);
         command.ExecuteNonQuery();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // MISC 
+    ///////////////////////////////////////////////////////////////////////////
+
+    public static bool IsEventClickDown(InputEvent e)
+    {
+        return (e is InputEventMouseButton mouseEvent && !mouseEvent.Pressed);
     }
 
 }

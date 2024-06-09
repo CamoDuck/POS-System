@@ -11,6 +11,7 @@ public partial class ControlScript : Control
 
     // [Export] Control barcodeInput;
     [Export] EnterProductPopup enterProductPopup;
+    [Export] QuantityPopup quantityPopup;
 
     [Export] PackedScene item;
 
@@ -68,7 +69,7 @@ public partial class ControlScript : Control
 
         var newItem = item.Instantiate();
         Item itemScript = (Item)newItem;
-        itemScript.SetValues(values);
+        itemScript.SetValues(values, quantityPopup);
 
         itemList.AddChild(newItem);
 

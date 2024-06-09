@@ -4,11 +4,13 @@ using System.Text.RegularExpressions;
 
 public partial class Item : Control
 {
-    public ControlScript control;
     [Export] Label NameLabel;
     [Export] Label PriceLabel;
     [Export] Label GSTLabel;
     [Export] Label PSTLabel;
+    [Export] Label QuantityLabel;
+
+    public QuantityPopup quantityPopup;
 
     StyleBoxFlat stylebox;
 
@@ -16,6 +18,8 @@ public partial class Item : Control
     Color defaultColor = new Color(0.9f, 0.9f, 0f, 0f);
 
     decimal originalPrice;
+    int quantity = 1;
+
     bool gstEnabled = false;
     bool pstEnabled = false;
     bool environmentalFeeEnabled = false;
@@ -26,17 +30,27 @@ public partial class Item : Control
         stylebox = new StyleBoxFlat();
         stylebox.BgColor = defaultColor;
         AddThemeStyleboxOverride("panel", stylebox);
+
+        SetQuantity(quantity);
     }
 
     public void OnGuiInput(InputEvent e)
     {
-        if (e is InputEventMouseButton mouseEvent && !mouseEvent.Pressed)
+        if (Global.IsEventClickDown(e))
         {
-            onClicked();
+            OnItemClicked();
         }
     }
 
-    void onClicked()
+    public void _OnQuantityClicked(InputEvent e)
+    {
+        if (Global.IsEventClickDown(e))
+        {
+            quantityPopup.Start(GetName(), quantity, SetQuantity);
+        }
+    }
+
+    void OnItemClicked()
     {
         Color color = defaultColor;
         selected = !selected;
@@ -53,13 +67,15 @@ public partial class Item : Control
 
     }
 
-    public void SetValues(object[] values)
+    public void SetValues(object[] values, QuantityPopup quantityPopup)
     {
+        this.quantityPopup = quantityPopup;
+
         string barcode = Convert.ToString(values[0]);
         string name = Convert.ToString(values[1]);
         decimal price = Convert.ToDecimal(values[2]);
-        int quantity = Convert.ToInt32(values[3]);
-        string type = Convert.ToString(values[4]);
+        // int quantity = Convert.ToInt32(values[3]);
+        // string type = Convert.ToString(values[4]);
         bool gst = Convert.ToBoolean(values[5]);
         bool pst = Convert.ToBoolean(values[6]);
         bool environmentalFee = Convert.ToBoolean(values[7]);
@@ -71,6 +87,12 @@ public partial class Item : Control
         SetPST(pst);
         SetEnviromentalFee(environmentalFee);
         SetBottleDepositFee(bottleDepositFee);
+    }
+
+    public void SetQuantity(int value)
+    {
+        quantity = value;
+        QuantityLabel.Text = $"x{quantity}";
     }
 
     void SetName(string name)
@@ -127,7 +149,12 @@ public partial class Item : Control
 
     public decimal GetTotalPrice()
     {
-        return Global.CalculateTotal(originalPrice, gstEnabled, pstEnabled, environmentalFeeEnabled, bottleDepositFeeEnabled);
+        return Global.CalculateTotal(quantity, originalPrice, gstEnabled, pstEnabled, environmentalFeeEnabled, bottleDepositFeeEnabled);
+    }
+
+    string GetName()
+    {
+        return NameLabel.Text;
     }
 
 }
