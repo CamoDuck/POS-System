@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b3hvcd7tbj6rj"]
+[gd_scene load_steps=10 format=3 uid="uid://b3hvcd7tbj6rj"]
 
 [ext_resource type="Script" path="res://Scripts/ControlScript.cs" id="1_aiqpa"]
 [ext_resource type="Texture2D" uid="uid://csv5pcwb0b0ad" path="res://Images/C3F56112-ACAF-48AC-A818-0C7D375D81A9.PNG" id="1_ldkee"]
@@ -6,7 +6,6 @@
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="3_uay47"]
 [ext_resource type="PackedScene" uid="uid://6hr5h3xt5ccb" path="res://Scenes/Item.tscn" id="4_rr83q"]
 [ext_resource type="Script" path="res://Scripts/ItemScrollContainer.cs" id="5_x00em"]
-[ext_resource type="PackedScene" uid="uid://dhn72nrvqv0ne" path="res://Scenes/BarcodeInput.tscn" id="7_ay32v"]
 [ext_resource type="PackedScene" uid="uid://cvd01j06ajrrl" path="res://Scenes/EnterProductPopup.tscn" id="8_4ga1o"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_21ehd"]
@@ -14,7 +13,7 @@ bg_color = Color(0.231373, 0.478431, 0.384314, 1)
 
 [sub_resource type="Theme" id="Theme_6ehp7"]
 
-[node name="Control" type="Control" node_paths=PackedStringArray("itemList", "itemListScroll", "totalLabel", "barcodeInput", "enterProductPopup")]
+[node name="Control" type="Control" node_paths=PackedStringArray("itemList", "itemListScroll", "totalLabel", "enterProductPopup")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,7 +24,6 @@ script = ExtResource("1_aiqpa")
 itemList = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/ItemScrollContainer/Items")
 itemListScroll = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/ItemScrollContainer")
 totalLabel = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/Total")
-barcodeInput = NodePath("BarcodeInputText")
 enterProductPopup = NodePath("EnterProductPopup")
 item = ExtResource("4_rr83q")
 
@@ -100,10 +98,6 @@ theme_override_styles/panel = ExtResource("2_byrxm")
 layout_mode = 2
 text = "asdafafaf"
 
-[node name="BarcodeInputText" parent="." instance=ExtResource("7_ay32v")]
-visible = false
-layout_mode = 1
-
 [node name="EnterProductPopup" parent="." instance=ExtResource("8_4ga1o")]
 visible = false
 layout_mode = 1
@@ -111,4 +105,3 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [connection signal="child_order_changed" from="VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/ItemScrollContainer/Items" to="VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/ItemScrollContainer" method="OnListChange"]
-[connection signal="BarcodeRead" from="BarcodeInputText" to="." method="_OnBarcode"]

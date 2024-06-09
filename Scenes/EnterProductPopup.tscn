@@ -99,6 +99,7 @@ size_flags_vertical = 3
 [node name="Create" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+disabled = true
 text = "Create"
 
 [node name="Cancel" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]

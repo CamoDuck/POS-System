@@ -4,8 +4,7 @@ using System.Text.RegularExpressions;
 
 public partial class EnterProductPopup : Panel
 {
-    [Signal] public delegate void CreatedEventHandler(string name, double price, int quantity, string type, bool gst, bool pst, bool environmentalFee, bool bottleDepositFee);
-    [Signal] public delegate void CanceledEventHandler();
+    [Signal] public delegate void ClosedPopupEventHandler();
 
     [Export] LineEdit NameLineEdit;
     [Export] LineEdit PriceLineEdit;
@@ -17,24 +16,36 @@ public partial class EnterProductPopup : Panel
 
     [Export] StyleBoxFlat ErrorStyle;
 
-    bool isNameValid = false;
-    bool isPriceValid = false;
+    bool isNameValid;
+    bool isPriceValid;
 
+    bool isCreateButtonPressed;
 
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
+    public void Start()
     {
-        UpdateCreateButton();
+        NameLineEdit.Clear();
+        PriceLineEdit.Clear();
+        GSTBox.ButtonPressed = false;
+        PSTBox.ButtonPressed = false;
+        EnviromentalFeeBox.ButtonPressed = false;
+        BottleDepositBox.ButtonPressed = false;
+
+        isNameValid = false;
+        isPriceValid = false;
+        isCreateButtonPressed = false;
+        Show();
     }
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
+    public void CloseIfOpen()
     {
+        Hide();
     }
 
     public void _OnNameLineEditChanged(string newText)
     {
-        bool isLengthValid = PriceLineEdit.Text.Length <= 50;
+        const int maxLength = 50;
+
+        bool isLengthValid = PriceLineEdit.Text.Length <= maxLength;
         isNameValid = isLengthValid;
 
         if (isLengthValid)
@@ -52,9 +63,9 @@ public partial class EnterProductPopup : Panel
 
     public void _OnPriceLineEditChanged(string newText)
     {
-        decimal minValue = 0.10m;
-        decimal maxValue = 500.00m;
-        string regex = @"^[+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?$";
+        const decimal minValue = 0.10m;
+        const decimal maxValue = 500.00m;
+        const string regex = @"^[+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?$";
 
         decimal value;
         bool isDecimal = decimal.TryParse(PriceLineEdit.Text, out value);
@@ -77,26 +88,38 @@ public partial class EnterProductPopup : Panel
 
     public void _OnCreateButtonPressed()
     {
+        Hide();
+        isCreateButtonPressed = true;
+        EmitSignal(SignalName.ClosedPopup);
+    }
+
+    public void _OnCancelButtonPressed()
+    {
+        Hide();
+        isCreateButtonPressed = false;
+        EmitSignal(SignalName.ClosedPopup);
+    }
+
+    void UpdateCreateButton()
+    {
+        CreateButton.Disabled = !(isNameValid && isPriceValid);
+    }
+
+    public object[] GetValues()
+    {
         string name = NameLineEdit.Text;
         double price = double.Parse(PriceLineEdit.Text);
         bool gst = GSTBox.ButtonPressed;
         bool pst = PSTBox.ButtonPressed;
         bool enviromentalFee = EnviromentalFeeBox.ButtonPressed;
         bool bottleDepositFee = BottleDepositBox.ButtonPressed;
-        EmitSignal(SignalName.Created, name, price, -1, "", gst, pst, enviromentalFee, bottleDepositFee);
-        Hide();
-    }
 
-    public void _OnCancelButtonPressed()
-    {
-        Hide();
-        EmitSignal(SignalName.Canceled);
-    }
-
-
-    void UpdateCreateButton()
-    {
-        CreateButton.Disabled = !(isNameValid && isPriceValid);
+        if (isCreateButtonPressed)
+        {
+            object[] values = { null, name, price, null, null, gst, pst, enviromentalFee, bottleDepositFee };
+            return values;
+        }
+        return null;
     }
 
 }

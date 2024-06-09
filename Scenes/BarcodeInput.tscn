@@ -1,8 +1,43 @@
-[gd_scene load_steps=2 format=3 uid="uid://dhn72nrvqv0ne"]
+[gd_scene load_steps=2 format=3 uid="uid://cvc87d1s30yoh"]
 
-[ext_resource type="Script" path="res://Scripts/BarcodeInput.cs" id="1_fbrgg"]
+[sub_resource type="CSharpScript" id="CSharpScript_odoqa"]
+script/source = "using Godot;
+using System;
+using System.IO.Ports;
 
-[node name="BarcodeInputText" type="Control" node_paths=PackedStringArray("barcodeInput")]
+public partial class BarcodeInput : Control
+{
+    [Signal] public delegate void BarcodeReadEventHandler(string barcode);
+
+    [Export] public LineEdit barcodeInput;
+
+
+    private SerialPort port = new SerialPort(\"COM4\", 9600, Parity.None, 8, StopBits.One);
+
+    public override void _Ready()
+    {
+        // Attach a method to be called when there
+        // is data waiting in the port's buffer 
+        port.DataReceived += new SerialDataReceivedEventHandler(_OnPortDataReceived);
+        // Begin communications 
+        port.Open();
+    }
+    public override void _ExitTree()
+    {
+        port.Close();
+    }
+
+    void _OnPortDataReceived(object sender, SerialDataReceivedEventArgs e)
+    {
+        // Show all the incoming data in the port's buffer
+        string barcode = port.ReadExisting();
+        CallDeferred(\"emit_signal\", SignalName.BarcodeRead, barcode);
+    }
+
+}
+"
+
+[node name="BarcodeInputText" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,8 +45,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 2
-script = ExtResource("1_fbrgg")
-barcodeInput = NodePath("LineEdit")
+script = SubResource("CSharpScript_odoqa")
 
 [node name="LineEdit" type="LineEdit" parent="."]
 layout_mode = 1

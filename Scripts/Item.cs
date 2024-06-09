@@ -53,18 +53,38 @@ public partial class Item : Control
 
     }
 
-    public void SetName(string name)
+    public void SetValues(object[] values)
+    {
+        string barcode = Convert.ToString(values[0]);
+        string name = Convert.ToString(values[1]);
+        decimal price = Convert.ToDecimal(values[2]);
+        int quantity = Convert.ToInt32(values[3]);
+        string type = Convert.ToString(values[4]);
+        bool gst = Convert.ToBoolean(values[5]);
+        bool pst = Convert.ToBoolean(values[6]);
+        bool environmentalFee = Convert.ToBoolean(values[7]);
+        bool bottleDepositFee = Convert.ToBoolean(values[8]);
+
+        SetName(name);
+        SetPrice(price);
+        SetGST(gst);
+        SetPST(pst);
+        SetEnviromentalFee(environmentalFee);
+        SetBottleDepositFee(bottleDepositFee);
+    }
+
+    void SetName(string name)
     {
         NameLabel.Text = name;
     }
 
-    public void SetPrice(decimal p)
+    void SetPrice(decimal p)
     {
         PriceLabel.Text = string.Format("{0:C}", p);
         originalPrice = p;
     }
 
-    public void SetGST(bool value)
+    void SetGST(bool value)
     {
         gstEnabled = value;
         if (gstEnabled)
@@ -77,7 +97,7 @@ public partial class Item : Control
         }
     }
 
-    public void SetPST(bool value)
+    void SetPST(bool value)
     {
         pstEnabled = value;
         if (pstEnabled)
@@ -90,12 +110,12 @@ public partial class Item : Control
         }
     }
 
-    public void SetEnviromentalFee(bool value)
+    void SetEnviromentalFee(bool value)
     {
         environmentalFeeEnabled = value;
     }
 
-    public void SetBottleDepositFee(bool value)
+    void SetBottleDepositFee(bool value)
     {
         bottleDepositFeeEnabled = value;
     }

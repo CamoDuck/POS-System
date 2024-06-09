@@ -35,9 +35,4 @@ public partial class ItemScrollContainer : ScrollContainer
         totalLabel.Text = $"Total : {String.Format("{0:C}", total)}";
     }
 
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
-    {
-    }
 }
