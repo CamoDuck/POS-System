@@ -6,14 +6,21 @@ using System.Threading.Tasks;
 public partial class ControlScript : Control
 {
     [Export] public Control itemList;
-    [Export] public ScrollContainer itemListScroll;
+    [Export] public ItemScrollContainer itemListScroll;
     [Export] public Label totalLabel;
 
     // [Export] Control barcodeInput;
     [Export] EnterProductPopup enterProductPopup;
     [Export] QuantityPopup quantityPopup;
 
-    [Export] PackedScene item;
+    [Export] PackedScene ITEM_SCENE;
+    [Export] PackedScene DISCOUNT_SCENE;
+
+    public override void _EnterTree()
+    {
+        Item.ITEM_SCENE = ITEM_SCENE;
+        Discount.DISCOUNT_SCENE = DISCOUNT_SCENE;
+    }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -67,23 +74,60 @@ public partial class ControlScript : Control
         }
         enterProductPopup.CloseIfOpen();
 
-        var newItem = item.Instantiate();
-        Item itemScript = (Item)newItem;
-        itemScript.SetValues(values, quantityPopup);
+        Item.NewItem(itemListScroll, quantityPopup, values);
+    }
 
-        itemList.AddChild(newItem);
+    bool IsAnySelected()
+    {
+        return GetSelectedCount() > 0;
+    }
 
-        // delay needed for maxvalue to update;
-        await ToSignal(GetTree().CreateTimer(0.001), "timeout");
-        itemListScroll.ScrollVertical = (int)itemListScroll.GetVScrollBar().MaxValue;
+    int GetSelectedCount()
+    {
+        return GetSelected().Count;
+    }
+
+    Godot.Collections.Array<Node> GetSelected()
+    {
+        return GetTree().GetNodesInGroup("SelectedItems");
     }
 
     void DeleteSelectedItems()
     {
-        var items = GetTree().GetNodesInGroup("SelectedItems");
+        Godot.Collections.Array<Node> items = GetSelected();
         foreach (Node item in items)
         {
             item.QueueFree();
         }
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Buttons
+    ///////////////////////////////////////////////////////////////////////////
+
+    void UpdateButtons()
+    {
+        // UpdateDiscountButtons();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void _OnDiscountButtonPressed(int percent)
+    {
+        var Nodes = GetSelected();
+        foreach (Item node in Nodes)
+        {
+            int index = node.GetIndex();
+            Discount.NewDiscount(itemListScroll, node, percent, index + 1);
+        }
+
+        if (Nodes.Count == 0)
+        {
+            Item lastItem = itemListScroll.GetItem(-1);
+            Discount.NewDiscount(itemListScroll, lastItem, percent);
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////////
+
 }

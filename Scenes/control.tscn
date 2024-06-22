@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://b3hvcd7tbj6rj"]
+[gd_scene load_steps=12 format=3 uid="uid://b3hvcd7tbj6rj"]
 
 [ext_resource type="Script" path="res://Scripts/ControlScript.cs" id="1_aiqpa"]
 [ext_resource type="Texture2D" uid="uid://csv5pcwb0b0ad" path="res://Images/C3F56112-ACAF-48AC-A818-0C7D375D81A9.PNG" id="1_ldkee"]
 [ext_resource type="StyleBox" uid="uid://dsc2q7c5sgsmq" path="res://backgroundColor.tres" id="2_byrxm"]
+[ext_resource type="PackedScene" uid="uid://dn21oyihmvulh" path="res://Scenes/Discount.tscn" id="3_qvbo2"]
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="3_uay47"]
 [ext_resource type="PackedScene" uid="uid://6hr5h3xt5ccb" path="res://Scenes/Item.tscn" id="4_rr83q"]
 [ext_resource type="Script" path="res://Scripts/ItemScrollContainer.cs" id="5_x00em"]
@@ -27,7 +28,8 @@ itemListScroll = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContain
 totalLabel = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/Total")
 enterProductPopup = NodePath("EnterProductPopup")
 quantityPopup = NodePath("QuantityPopup")
-item = ExtResource("4_rr83q")
+ITEM_SCENE = ExtResource("4_rr83q")
+DISCOUNT_SCENE = ExtResource("3_qvbo2")
 
 [node name="VSplitContainer" type="VSplitContainer" parent="."]
 layout_mode = 1
@@ -96,9 +98,26 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("2_byrxm")
 
-[node name="Label" type="Label" parent="VSplitContainer/HBoxContainer/Control Panel"]
+[node name="GridContainer" type="GridContainer" parent="VSplitContainer/HBoxContainer/Control Panel"]
 layout_mode = 2
-text = "asdafafaf"
+columns = 3
+
+[node name="10PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "10% Discount
+"
+
+[node name="25PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "25% Discount
+"
+
+[node name="50PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "50% Discount"
 
 [node name="EnterProductPopup" parent="." instance=ExtResource("8_4ga1o")]
 visible = false
@@ -111,3 +130,6 @@ visible = false
 layout_mode = 1
 
 [connection signal="child_order_changed" from="VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/ItemScrollContainer/Items" to="VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/ItemScrollContainer" method="OnListChange"]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/GridContainer/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/GridContainer/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/GridContainer/50PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [50]]

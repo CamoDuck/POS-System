@@ -171,7 +171,7 @@ public static class Global
 
     public static bool IsEventClickDown(InputEvent e)
     {
-        return (e is InputEventMouseButton mouseEvent && !mouseEvent.Pressed);
+        return e is InputEventMouseButton mouseEvent && !mouseEvent.Pressed;
     }
 
 }

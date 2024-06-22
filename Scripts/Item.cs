@@ -4,6 +4,10 @@ using System.Text.RegularExpressions;
 
 public partial class Item : Control
 {
+    [Signal] public delegate void PriceChangedEventHandler(bool isDeleted);
+
+    public static PackedScene ITEM_SCENE;
+
     [Export] Label NameLabel;
     [Export] Label PriceLabel;
     [Export] Label GSTLabel;
@@ -19,6 +23,7 @@ public partial class Item : Control
 
     decimal originalPrice;
     int quantity = 1;
+    decimal discountPercent = 0;
 
     bool gstEnabled = false;
     bool pstEnabled = false;
@@ -32,6 +37,11 @@ public partial class Item : Control
         AddThemeStyleboxOverride("panel", stylebox);
 
         SetQuantity(quantity);
+    }
+
+    public override void _ExitTree()
+    {
+        EmitSignal(SignalName.PriceChanged, true);
     }
 
     public void OnGuiInput(InputEvent e)
@@ -67,10 +77,21 @@ public partial class Item : Control
 
     }
 
-    public void SetValues(object[] values, QuantityPopup quantityPopup)
+    static public Node NewItem(ItemScrollContainer itemList, QuantityPopup quantityPopup, object[] values, int index = -1)
     {
-        this.quantityPopup = quantityPopup;
+        Item newItem = ITEM_SCENE.Instantiate<Item>();
+        newItem.quantityPopup = quantityPopup;
+        newItem.SetItemValues(values);
+        newItem.AddToGroup("Items");
 
+        newItem.PriceChanged += itemList.UpdateTotalLabel;
+        itemList.AddToList(newItem, true, index);
+
+        return newItem;
+    }
+
+    public void SetItemValues(object[] values)
+    {
         string barcode = Convert.ToString(values[0]);
         string name = Convert.ToString(values[1]);
         decimal price = Convert.ToDecimal(values[2]);
@@ -81,6 +102,7 @@ public partial class Item : Control
         bool environmentalFee = Convert.ToBoolean(values[7]);
         bool bottleDepositFee = Convert.ToBoolean(values[8]);
 
+        originalPrice = price;
         SetName(name);
         SetPrice(price);
         SetGST(gst);
@@ -89,10 +111,19 @@ public partial class Item : Control
         SetBottleDepositFee(bottleDepositFee);
     }
 
+    public void SetDiscount(int percent)
+    {
+        this.discountPercent = percent / 100m;
+    }
+
     public void SetQuantity(int value)
     {
         quantity = value;
-        QuantityLabel.Text = $"x{quantity}";
+        QuantityLabel.Text = $"{quantity} @";
+
+        SetPrice(GetSubTotalPrice());
+
+        EmitSignal(SignalName.PriceChanged, false);
     }
 
     void SetName(string name)
@@ -103,7 +134,6 @@ public partial class Item : Control
     void SetPrice(decimal p)
     {
         PriceLabel.Text = string.Format("{0:C}", p);
-        originalPrice = p;
     }
 
     void SetGST(bool value)
@@ -147,14 +177,29 @@ public partial class Item : Control
         return originalPrice;
     }
 
-    public decimal GetTotalPrice()
+    public decimal GetSubTotalPrice()
     {
-        return Global.CalculateTotal(quantity, originalPrice, gstEnabled, pstEnabled, environmentalFeeEnabled, bottleDepositFeeEnabled);
+        return originalPrice * quantity;
     }
 
-    string GetName()
+    public decimal GetTotalPrice()
+    {
+        return Global.CalculateTotal(quantity, originalPrice, discountPercent, gstEnabled, pstEnabled, environmentalFeeEnabled, bottleDepositFeeEnabled);
+    }
+
+    public string GetName()
     {
         return NameLabel.Text;
+    }
+
+    public void AddOneQuantity()
+    {
+        SetQuantity(quantity + 1);
+    }
+
+    public bool isDiscounted()
+    {
+        return discountPercent > 0;
     }
 
 }

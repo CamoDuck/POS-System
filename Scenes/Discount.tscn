@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=3 uid="uid://dn21oyihmvulh"]
+
+[ext_resource type="Script" path="res://Scripts/Discount.cs" id="1_6epko"]
+[ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="2_bcsjx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mkldc"]
+bg_color = Color(0.890196, 0.913725, 0.270588, 0)
+border_width_bottom = 5
+border_color = Color(0.412152, 0.412152, 0.412152, 1)
+
+[node name="Discount" type="PanelContainer" node_paths=PackedStringArray("NameLabel", "DiscountLabel")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mkldc")
+script = ExtResource("1_6epko")
+NameLabel = NodePath("HBoxContainer/Name/Label")
+DiscountLabel = NodePath("HBoxContainer/Discount/Label")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Name" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="Label" type="Label" parent="HBoxContainer/Name"]
+layout_mode = 2
+text = "Name
+"
+label_settings = ExtResource("2_bcsjx")
+
+[node name="Margin2" type="Control" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.75
+
+[node name="Discount" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HBoxContainer/Discount"]
+layout_mode = 2
+text = "Discount
+"
+label_settings = ExtResource("2_bcsjx")
+horizontal_alignment = 2
+clip_text = true
+
+[node name="Margin3" type="Control" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.25
+
+[connection signal="gui_input" from="." to="." method="OnGuiInput"]
+[connection signal="gui_input" from="HBoxContainer/Margin2" to="." method="_OnQuantityClicked"]

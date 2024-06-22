@@ -107,6 +107,11 @@ public partial class EnterProductPopup : Panel
 
     public object[] GetValues()
     {
+        if (!isCreateButtonPressed)
+        {
+            return null;
+        }
+
         string name = NameLineEdit.Text;
         double price = double.Parse(PriceLineEdit.Text);
         bool gst = GSTBox.ButtonPressed;
@@ -114,12 +119,8 @@ public partial class EnterProductPopup : Panel
         bool enviromentalFee = EnviromentalFeeBox.ButtonPressed;
         bool bottleDepositFee = BottleDepositBox.ButtonPressed;
 
-        if (isCreateButtonPressed)
-        {
-            object[] values = { null, name, price, null, null, gst, pst, enviromentalFee, bottleDepositFee };
-            return values;
-        }
-        return null;
+        object[] values = { null, name, price, null, null, gst, pst, enviromentalFee, bottleDepositFee };
+        return values;
     }
 
 }
