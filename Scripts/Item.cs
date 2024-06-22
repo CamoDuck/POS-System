@@ -84,7 +84,7 @@ public partial class Item : Control
         newItem.SetItemValues(values);
         newItem.AddToGroup("Items");
 
-        newItem.PriceChanged += itemList.UpdateTotalLabel;
+        newItem.PriceChanged += itemList.UpdateLabels;
         itemList.AddToList(newItem, true, index);
 
         return newItem;
@@ -185,6 +185,16 @@ public partial class Item : Control
     public decimal GetTotalPrice()
     {
         return Global.CalculateTotal(quantity, originalPrice, discountPercent, gstEnabled, pstEnabled, environmentalFeeEnabled, bottleDepositFeeEnabled);
+    }
+
+    public decimal GetGST()
+    {
+        return Global.CalculateGST(quantity, originalPrice, discountPercent, gstEnabled);
+    }
+
+    public decimal GetPST()
+    {
+        return Global.CalculatePST(quantity, originalPrice, discountPercent, pstEnabled);
     }
 
     public string GetName()

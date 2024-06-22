@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b3hvcd7tbj6rj"]
+[gd_scene load_steps=13 format=3 uid="uid://b3hvcd7tbj6rj"]
 
 [ext_resource type="Script" path="res://Scripts/ControlScript.cs" id="1_aiqpa"]
 [ext_resource type="Texture2D" uid="uid://csv5pcwb0b0ad" path="res://Images/C3F56112-ACAF-48AC-A818-0C7D375D81A9.PNG" id="1_ldkee"]
@@ -15,6 +15,9 @@ bg_color = Color(0.231373, 0.478431, 0.384314, 1)
 
 [sub_resource type="Theme" id="Theme_6ehp7"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_q1rjj"]
+font_color = Color(0, 0, 0, 1)
+
 [node name="Control" type="Control" node_paths=PackedStringArray("itemList", "itemListScroll", "totalLabel", "enterProductPopup", "quantityPopup")]
 layout_mode = 3
 anchors_preset = 15
@@ -23,9 +26,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_aiqpa")
-itemList = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/ItemScrollContainer/Items")
-itemListScroll = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/ItemScrollContainer")
-totalLabel = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/Total")
+itemList = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items")
+itemListScroll = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer")
+totalLabel = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer/Total")
 enterProductPopup = NodePath("EnterProductPopup")
 quantityPopup = NodePath("QuantityPopup")
 ITEM_SCENE = ExtResource("4_rr83q")
@@ -72,26 +75,87 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VSplitContainer" type="VSplitContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer"]
 layout_mode = 2
-split_offset = 400
 
-[node name="ItemScrollContainer" type="ScrollContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer"]
+[node name="ItemScrollContainer" type="ScrollContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer" node_paths=PackedStringArray("totalLabel", "subTotalLabel", "totalGSTLabel", "totalPSTLabel")]
 layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 5.0
 follow_focus = true
 vertical_scroll_mode = 2
 script = ExtResource("5_x00em")
+totalLabel = NodePath("../HBoxContainer/GridContainer/Total")
+subTotalLabel = NodePath("../HBoxContainer/GridContainer/SubTotal")
+totalGSTLabel = NodePath("../HBoxContainer/GridContainer/Total GST")
+totalPSTLabel = NodePath("../HBoxContainer/GridContainer/Total PST")
 
-[node name="Items" type="VBoxContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/ItemScrollContainer"]
+[node name="Items" type="VBoxContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 theme = SubResource("Theme_6ehp7")
 
-[node name="Total" type="Label" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+columns = 2
+
+[node name="Total GST" type="Label" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 2.0
+text = "Total GST: $
+"
+label_settings = SubResource("LabelSettings_q1rjj")
+
+[node name="Total PST" type="Label" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 2.0
+text = "Total PST: $
+"
+label_settings = SubResource("LabelSettings_q1rjj")
+
+[node name="SubTotal" type="Label" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 2.0
+text = "SubTotal: $
+"
+label_settings = SubResource("LabelSettings_q1rjj")
+
+[node name="Control" type="Control" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="Total" type="Label" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 2.0
 text = "Total: $
 "
 label_settings = ExtResource("3_uay47")
+
+[node name="Pay Cash" type="Button" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 30
+text = "Pay Cash"
+
+[node name="Pay Card" type="Button" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 30
+text = "Pay Card"
 
 [node name="Control Panel" type="PanelContainer" parent="VSplitContainer/HBoxContainer"]
 layout_mode = 2
@@ -129,7 +193,7 @@ grow_vertical = 1
 visible = false
 layout_mode = 1
 
-[connection signal="child_order_changed" from="VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/ItemScrollContainer/Items" to="VSplitContainer/HBoxContainer/Item List/MarginContainer/VSplitContainer/ItemScrollContainer" method="OnListChange"]
+[connection signal="child_order_changed" from="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items" to="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer" method="OnListChange"]
 [connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/GridContainer/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
 [connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/GridContainer/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
 [connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/GridContainer/50PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [50]]

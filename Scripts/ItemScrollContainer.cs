@@ -7,7 +7,11 @@ public partial class ItemScrollContainer : ScrollContainer
 {
     ControlScript control;
 
-    Label totalLabel;
+    [Export] Label totalLabel;
+    [Export] Label subTotalLabel;
+    [Export] Label totalGSTLabel;
+    [Export] Label totalPSTLabel;
+
     Control itemList;
 
 
@@ -15,8 +19,8 @@ public partial class ItemScrollContainer : ScrollContainer
     public override void _Ready()
     {
         control = GetOwner<ControlScript>();
-        totalLabel = control.totalLabel;
         itemList = control.itemList;
+        UpdateLabels();
     }
 
     public void AddToList(Node newNode, bool isItem, int index)
@@ -47,7 +51,7 @@ public partial class ItemScrollContainer : ScrollContainer
 
     void OnListChange()
     {
-        UpdateTotalLabel();
+        UpdateLabels();
 
         Task.Delay(10).ContinueWith(t => CallDeferred("UpdateScrollBar"));
     }
@@ -59,16 +63,26 @@ public partial class ItemScrollContainer : ScrollContainer
     }
 
 
-    public void UpdateTotalLabel(bool _ = false)
+    public void UpdateLabels(bool _ = false)
     {
         decimal total = 0;
+        decimal subtotal = 0;
+        decimal totalGST = 0;
+        decimal totalPST = 0;
+
         var itemLabels = GetTree().GetNodesInGroup("Items"); ;
         foreach (Item item in itemLabels)
         {
             total += item.GetTotalPrice();
+            subtotal += item.GetSubTotalPrice();
+            totalGST += item.GetGST();
+            totalPST += item.GetPST();
         }
 
         totalLabel.Text = $"Total : {String.Format("{0:C}", total)}";
+        subTotalLabel.Text = $"SubTotal : {String.Format("{0:C}", subtotal)}";
+        totalGSTLabel.Text = $"Total GST : {String.Format("{0:C}", totalGST)}";
+        totalPSTLabel.Text = $"Total PST : {String.Format("{0:C}", totalPST)}";
     }
 
 }

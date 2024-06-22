@@ -19,6 +19,21 @@ public static class Global
     static readonly decimal ENVIRONMENTAL_FEE = 0.05m;
     static readonly decimal BOTTLE_DEPOSIT_FEE = 0.10m;
 
+    public static decimal CalculateGST(int quantity, decimal originalPrice, decimal discountPercent, bool isGST)
+    {
+        decimal newPrice = originalPrice * (1 - discountPercent);
+        decimal gst = isGST ? newPrice * GST_PRECENT : 0;
+        decimal multipliedTotal = gst * quantity;
+        return multipliedTotal;
+    }
+
+    public static decimal CalculatePST(int quantity, decimal originalPrice, decimal discountPercent, bool isPST)
+    {
+        decimal newPrice = originalPrice * (1 - discountPercent);
+        decimal pst = isPST ? newPrice * PST_PRECENT : 0;
+        decimal multipliedTotal = pst * quantity;
+        return multipliedTotal;
+    }
 
     public static decimal CalculateTotal(int quantity, decimal originalPrice, decimal discountPercent, bool isGST, bool isPST, bool isEnvironmentalFee, bool isBottleDepositFee)
     {
