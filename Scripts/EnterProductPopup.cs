@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 public partial class EnterProductPopup : Panel
@@ -105,7 +106,7 @@ public partial class EnterProductPopup : Panel
         CreateButton.Disabled = !(isNameValid && isPriceValid);
     }
 
-    public object[] GetValues()
+    public Global.Product GetValues()
     {
         if (!isCreateButtonPressed)
         {
@@ -120,7 +121,7 @@ public partial class EnterProductPopup : Panel
         bool bottleDepositFee = BottleDepositBox.ButtonPressed;
 
         object[] values = { null, name, price, null, null, gst, pst, enviromentalFee, bottleDepositFee };
-        return values;
+        return new Global.Product(values.ToList());
     }
 
 }

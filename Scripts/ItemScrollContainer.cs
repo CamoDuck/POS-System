@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
@@ -46,7 +47,12 @@ public partial class ItemScrollContainer : ScrollContainer
 
     public Item GetItem(int index)
     {
-        return itemList.GetChild<Item>(index);
+        Node[] items = GetTree().GetNodesInGroup("Items").ToArray();
+        if (items.Count() == 0)
+        {
+            return null;
+        }
+        return (Item)items.Last();
     }
 
     void OnListChange()

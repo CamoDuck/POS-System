@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b3hvcd7tbj6rj"]
+[gd_scene load_steps=15 format=3 uid="uid://b3hvcd7tbj6rj"]
 
 [ext_resource type="Script" path="res://Scripts/ControlScript.cs" id="1_aiqpa"]
 [ext_resource type="Texture2D" uid="uid://csv5pcwb0b0ad" path="res://Images/C3F56112-ACAF-48AC-A818-0C7D375D81A9.PNG" id="1_ldkee"]
@@ -8,7 +8,9 @@
 [ext_resource type="PackedScene" uid="uid://6hr5h3xt5ccb" path="res://Scenes/Item.tscn" id="4_rr83q"]
 [ext_resource type="Script" path="res://Scripts/ItemScrollContainer.cs" id="5_x00em"]
 [ext_resource type="PackedScene" uid="uid://cvd01j06ajrrl" path="res://Scenes/EnterProductPopup.tscn" id="8_4ga1o"]
+[ext_resource type="StyleBox" uid="uid://cs1y6le03unjk" path="res://RedButton.tres" id="8_afa7q"]
 [ext_resource type="PackedScene" uid="uid://bo8lphkr0246i" path="res://Scenes/QuantityPopup.tscn" id="8_wyh3o"]
+[ext_resource type="PackedScene" uid="uid://bbrrojoxwp5y0" path="res://Scenes/AddItemByNamePopup.tscn" id="11_og3yy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_21ehd"]
 bg_color = Color(0.231373, 0.478431, 0.384314, 1)
@@ -18,7 +20,7 @@ bg_color = Color(0.231373, 0.478431, 0.384314, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_q1rjj"]
 font_color = Color(0, 0, 0, 1)
 
-[node name="Control" type="Control" node_paths=PackedStringArray("itemList", "itemListScroll", "totalLabel", "enterProductPopup", "quantityPopup")]
+[node name="Control" type="Control" node_paths=PackedStringArray("itemList", "itemListScroll", "totalLabel", "enterProductPopup", "quantityPopup", "addItemByNamePopup")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,6 +35,7 @@ enterProductPopup = NodePath("EnterProductPopup")
 quantityPopup = NodePath("QuantityPopup")
 ITEM_SCENE = ExtResource("4_rr83q")
 DISCOUNT_SCENE = ExtResource("3_qvbo2")
+addItemByNamePopup = NodePath("AddItemByNamePopup")
 
 [node name="VSplitContainer" type="VSplitContainer" parent="."]
 layout_mode = 1
@@ -162,26 +165,65 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("2_byrxm")
 
-[node name="GridContainer" type="GridContainer" parent="VSplitContainer/HBoxContainer/Control Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel"]
 layout_mode = 2
-columns = 3
 
-[node name="10PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/GridContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="10PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
 text = "10% Discount
 "
 
-[node name="25PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/GridContainer"]
+[node name="25PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
 text = "25% Discount
 "
 
-[node name="50PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/GridContainer"]
+[node name="50PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
 text = "50% Discount"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RemoveDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = ExtResource("8_afa7q")
+theme_override_styles/hover = ExtResource("8_afa7q")
+theme_override_styles/pressed = ExtResource("8_afa7q")
+theme_override_styles/focus = ExtResource("8_afa7q")
+text = "REMOVE DISCOUNT
+"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AddItemByName" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Add Item By Name"
+
+[node name="Control" type="Control" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 10.0
 
 [node name="EnterProductPopup" parent="." instance=ExtResource("8_4ga1o")]
 visible = false
@@ -193,7 +235,13 @@ grow_vertical = 1
 visible = false
 layout_mode = 1
 
+[node name="AddItemByNamePopup" parent="." instance=ExtResource("11_og3yy")]
+visible = false
+layout_mode = 1
+
 [connection signal="child_order_changed" from="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items" to="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer" method="OnListChange"]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/GridContainer/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/GridContainer/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/GridContainer/50PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [50]]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/50PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [50]]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer2/RemoveDiscount" to="." method="_OnDiscountButtonPressed" binds= [0]]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer4/AddItemByName" to="." method="_OnAddItemByNameButtonPressed"]

@@ -4,15 +4,22 @@ using System;
 public partial class Discount : PanelContainer
 {
     public static PackedScene DISCOUNT_SCENE;
+    public static ItemScrollContainer itemList;
 
     [Export] Label NameLabel;
     [Export] Label DiscountLabel;
 
+
     Item discountedItem;
     decimal percent;
 
-    static public Node NewDiscount(ItemScrollContainer itemList, Item discountedItem, int percent, int index = -1)
+    static public Node NewDiscount(Item discountedItem, int percent, int index = -1)
     {
+        if (discountedItem.isDiscounted())
+        {
+            discountedItem.RemoveDiscount();
+        }
+
         Discount newDiscount = DISCOUNT_SCENE.Instantiate<Discount>();
 
         discountedItem.SetDiscount(percent);
@@ -31,11 +38,12 @@ public partial class Discount : PanelContainer
     {
         if (isDeleted)
         {
+            discountedItem.PriceChanged -= OnDiscountedItemChanged;
             QueueFree();
         }
         else
         {
-            decimal newPrice = discountedItem.GetSubTotalPrice();
+            decimal newPrice = discountedItem.GetNoDiscountPrice();
             decimal discountedAmount = newPrice * percent;
             SetDiscount(discountedAmount);
         }

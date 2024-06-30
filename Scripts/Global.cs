@@ -9,6 +9,35 @@ using System.Collections.Generic;
 
 public static class Global
 {
+    /// TESTING
+    public static ControlScript CS;
+
+    public class Product
+    {
+        public string barcode;
+        public string name;
+        public decimal price;
+        public int quantity;
+        public string type;
+        public bool gst;
+        public bool pst;
+        public bool environmental;
+        public bool bottleDeposit;
+
+        public Product(List<object> values)
+        {
+            barcode = Convert.ToString(values[0]);
+            name = Convert.ToString(values[1]);
+            price = Convert.ToDecimal(values[2]);
+            quantity = Convert.ToInt32(values[3]);
+            type = Convert.ToString(values[4]);
+            gst = Convert.ToBoolean(values[5]);
+            pst = Convert.ToBoolean(values[6]);
+            environmental = Convert.ToBoolean(values[7]);
+            bottleDeposit = Convert.ToBoolean(values[8]);
+        }
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // Money 
@@ -107,7 +136,8 @@ public static class Global
 
     public static void CreateTables()
     {
-        string sql = @"CREATE TABLE IF NOT EXISTS Products 
+        string sql = @"
+        CREATE TABLE IF NOT EXISTS Products 
             (
             Barcode VARCHAR(13) PRIMARY KEY, 
             Name VARCHAR(50) NOT NULL,
@@ -118,8 +148,17 @@ public static class Global
             PST BOOLEAN NOT NULL,
             EnviromentalFee BOOLEAN NOT NULL,
             BottleDepositFee BOOLEAN NOT NULL
-            )";
+            )
+            ";
         SqliteCommand command = new SqliteCommand(sql, dbConnection);
+        command.ExecuteNonQuery();
+
+        sql = @"
+        CREATE TABLE IF NOT EXISTS ProductTypes
+            (
+            Type VARCHAR(50) PRIMARY KEY
+            )";
+        command = new SqliteCommand(sql, dbConnection);
         command.ExecuteNonQuery();
     }
 
@@ -128,54 +167,95 @@ public static class Global
         dbConnection.Close();
     }
 
-    public static SqliteDataReader Query(string sql)
+    static SqliteDataReader Query(string sql)
     {
         SqliteCommand command = new SqliteCommand(sql, dbConnection);
         return command.ExecuteReader();
     }
 
-    public static object[] GetProduct(string barcodeID)
+    static List<List<object>> QueryAndRead(string sql, int columnCount, int maxRowsCount = int.MaxValue)
+    {
+        SqliteDataReader reader = Global.Query(sql);
+        List<List<object>> data = new List<List<object>>();
+
+        int i = 0;
+        while (reader.Read() && i < maxRowsCount)
+        {
+            object[] vTemp = new object[columnCount];
+            reader.GetValues(vTemp);
+            data.Add(vTemp.ToList());
+            i++;
+        }
+
+        if (i == 0)
+        {
+            return null;
+        }
+        return data;
+    }
+
+    public static Product GetProductByBarcode(string barcodeID)
     {
         string sql =
             @$"SELECT *
             FROM Products p
             WHERE p.Barcode = '{barcodeID}'";
-        SqliteDataReader queryResult = Global.Query(sql);
 
-        if (queryResult.HasRows)
+        List<List<object>> rows = QueryAndRead(sql, Global.PRODUCT_COLUMN_COUNT, 1);
+        if (rows != null && rows.Count > 0)
         {
-            queryResult.Read();
-            object[] row = new object[Global.PRODUCT_COLUMN_COUNT];
-            if (queryResult.GetValues(row) > 0)
-            {
-                return row;
-            }
+            return new Product(rows[0]);
         }
         return null;
     }
 
-    public static void AddItemToDb(object[] values)
+    public static List<Product> GetProductsByName(string Name, string type = null, int maxRowsCount = int.MaxValue)
     {
-        // string barcode, string name, decimal price, int quantity, string type, bool gst, bool pst, bool environmentalFee, bool bottleDepositFee
-        if (values.Length != 9)
+        string condition1 = type == null ? "" : $"AND p.Type == '{type}'";
+
+        string sql =
+        @$"SELECT *
+            FROM Products p
+            WHERE p.Name LIKE '%{Name}%' {condition1}
+            ORDER BY LOWER(p.Name) ASC";
+
+        List<List<object>> rows = QueryAndRead(sql, PRODUCT_COLUMN_COUNT, maxRowsCount);
+        if (rows != null && rows.Count > 0)
         {
-            GD.PushError("Wrong number of values");
-            return;
+            List<Product> products = rows.Select(row => new Product(row)).ToList();
+            return products;
         }
+        return null;
+    }
 
-        string barcode = Convert.ToString(values[0]);
-        string name = Convert.ToString(values[1]);
-        decimal price = Convert.ToDecimal(values[2]);
-        int quantity = Convert.ToInt32(values[3]);
-        string type = Convert.ToString(values[4]);
-        bool gst = Convert.ToBoolean(values[5]);
-        bool pst = Convert.ToBoolean(values[6]);
-        bool environmentalFee = Convert.ToBoolean(values[7]);
-        bool bottleDepositFee = Convert.ToBoolean(values[8]);
+    public static List<string> GetProductTypes()
+    {
+        string sql =
+        @$"SELECT *
+            FROM ProductTypes pt
+            ORDER BY LOWER(pt.Type) ASC";
 
-        GD.Print($"Save : [{barcode}]");
+        List<List<object>> rows = QueryAndRead(sql, 1);
+
+        if (rows != null && rows.Count > 0)
+        {
+            List<string> types = new List<string>();
+
+            foreach (List<object> row in rows)
+            {
+                types.Add((string)row[0]);
+            }
+            return types;
+        }
+        return null;
+    }
+
+    public static void AddItemToDb(Global.Product values)
+    {
+        GD.Print($"Save : [{values.barcode}]");
         string sql = $@"INSERT INTO Products (Barcode, Name, Price, Quantity, Type, GST, PST, EnviromentalFee, BottleDepositFee)
-            VALUES ('{barcode}', '{name}', {price}, {quantity}, '{type}', {gst}, {pst}, {environmentalFee}, {bottleDepositFee}) ;";
+            VALUES ('{values.barcode}', '{values.name}', {values.price}, {values.quantity}, 
+            '{values.type}', {values.gst}, {values.pst}, {values.environmental}, {values.bottleDeposit}) ;";
         SqliteCommand command = new SqliteCommand(sql, dbConnection);
         command.ExecuteNonQuery();
     }

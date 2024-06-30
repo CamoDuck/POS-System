@@ -16,16 +16,28 @@ public partial class ControlScript : Control
     [Export] PackedScene ITEM_SCENE;
     [Export] PackedScene DISCOUNT_SCENE;
 
+    public void Print(object s)
+    {
+        GD.Print(s);
+    }
+
     public override void _EnterTree()
     {
+        Global.CS = this; // TESTING
+
         Item.ITEM_SCENE = ITEM_SCENE;
+        Item.quantityPopup = quantityPopup;
+        Item.itemList = itemListScroll;
+
         Discount.DISCOUNT_SCENE = DISCOUNT_SCENE;
+        Discount.itemList = itemListScroll;
     }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         Global.ConnectDb();
+        Global.CreateTables();
         Global.ConnectScanner(_OnBarcode);
     }
 
@@ -54,7 +66,7 @@ public partial class ControlScript : Control
 
     async void ScanItem(string barcodeID)
     {
-        object[] values = Global.GetProduct(barcodeID);
+        Global.Product values = Global.GetProductByBarcode(barcodeID);
 
         if (values == null)
         {
@@ -69,12 +81,12 @@ public partial class ControlScript : Control
                 return;
             }
 
-            values[0] = barcodeID;
+            values.barcode = barcodeID;
             Global.AddItemToDb(values);
         }
         enterProductPopup.CloseIfOpen();
 
-        Item.NewItem(itemListScroll, quantityPopup, values);
+        Item.NewItem(values);
     }
 
     bool IsAnySelected()
@@ -115,19 +127,38 @@ public partial class ControlScript : Control
 
     public void _OnDiscountButtonPressed(int percent)
     {
-        var Nodes = GetSelected();
-        foreach (Item node in Nodes)
-        {
-            int index = node.GetIndex();
-            Discount.NewDiscount(itemListScroll, node, percent, index + 1);
-        }
 
+        var Nodes = GetSelected();
         if (Nodes.Count == 0)
         {
             Item lastItem = itemListScroll.GetItem(-1);
-            Discount.NewDiscount(itemListScroll, lastItem, percent);
+            if (lastItem == null)
+            {
+                return;
+            }
+            Nodes.Add(lastItem);
+        }
+
+        foreach (Item node in Nodes)
+        {
+            if (percent == 0)
+            {
+                node.RemoveDiscount();
+                continue;
+            }
+
+            int index = node.GetIndex();
+            Discount.NewDiscount(node, percent, index + 1);
         }
     }
+
     ///////////////////////////////////////////////////////////////////////////
+
+    [Export] AddItemByNamePopup addItemByNamePopup;
+
+    public void _OnAddItemByNameButtonPressed()
+    {
+        addItemByNamePopup.Open();
+    }
 
 }

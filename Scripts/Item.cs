@@ -7,14 +7,15 @@ public partial class Item : Control
     [Signal] public delegate void PriceChangedEventHandler(bool isDeleted);
 
     public static PackedScene ITEM_SCENE;
+    public static ItemScrollContainer itemList;
+    public static QuantityPopup quantityPopup;
+
 
     [Export] Label NameLabel;
     [Export] Label PriceLabel;
     [Export] Label GSTLabel;
     [Export] Label PSTLabel;
     [Export] Label QuantityLabel;
-
-    public QuantityPopup quantityPopup;
 
     StyleBoxFlat stylebox;
 
@@ -41,7 +42,7 @@ public partial class Item : Control
 
     public override void _ExitTree()
     {
-        EmitSignal(SignalName.PriceChanged, true);
+        RemoveDiscount();
     }
 
     public void OnGuiInput(InputEvent e)
@@ -77,10 +78,16 @@ public partial class Item : Control
 
     }
 
-    static public Node NewItem(ItemScrollContainer itemList, QuantityPopup quantityPopup, object[] values, int index = -1)
+    public void RemoveDiscount()
+    {
+        discountPercent = 0;
+        EmitSignal(SignalName.PriceChanged, true);
+    }
+
+    static public Node NewItem(Global.Product values, int index = -1)
     {
         Item newItem = ITEM_SCENE.Instantiate<Item>();
-        newItem.quantityPopup = quantityPopup;
+        // newItem.quantityPopup = quantityPopup;
         newItem.SetItemValues(values);
         newItem.AddToGroup("Items");
 
@@ -90,25 +97,15 @@ public partial class Item : Control
         return newItem;
     }
 
-    public void SetItemValues(object[] values)
+    public void SetItemValues(Global.Product values)
     {
-        string barcode = Convert.ToString(values[0]);
-        string name = Convert.ToString(values[1]);
-        decimal price = Convert.ToDecimal(values[2]);
-        // int quantity = Convert.ToInt32(values[3]);
-        // string type = Convert.ToString(values[4]);
-        bool gst = Convert.ToBoolean(values[5]);
-        bool pst = Convert.ToBoolean(values[6]);
-        bool environmentalFee = Convert.ToBoolean(values[7]);
-        bool bottleDepositFee = Convert.ToBoolean(values[8]);
-
-        originalPrice = price;
-        SetName(name);
-        SetPrice(price);
-        SetGST(gst);
-        SetPST(pst);
-        SetEnviromentalFee(environmentalFee);
-        SetBottleDepositFee(bottleDepositFee);
+        originalPrice = values.price;
+        SetName(values.name);
+        SetPrice(values.price);
+        SetGST(values.gst);
+        SetPST(values.pst);
+        SetEnviromentalFee(values.environmental);
+        SetBottleDepositFee(values.bottleDeposit);
     }
 
     public void SetDiscount(int percent)
@@ -121,7 +118,7 @@ public partial class Item : Control
         quantity = value;
         QuantityLabel.Text = $"{quantity} @";
 
-        SetPrice(GetSubTotalPrice());
+        SetPrice(GetNoDiscountPrice());
 
         EmitSignal(SignalName.PriceChanged, false);
     }
@@ -172,14 +169,19 @@ public partial class Item : Control
         bottleDepositFeeEnabled = value;
     }
 
-    public decimal GetOriginalPrice()
+    public decimal GetSingleOriginalPrice()
     {
         return originalPrice;
     }
 
-    public decimal GetSubTotalPrice()
+    public decimal GetNoDiscountPrice()
     {
         return originalPrice * quantity;
+    }
+
+    public decimal GetSubTotalPrice()
+    {
+        return Global.CalculateTotal(quantity, originalPrice, discountPercent, false, false, false, false);
     }
 
     public decimal GetTotalPrice()

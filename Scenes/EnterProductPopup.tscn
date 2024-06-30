@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://cvd01j06ajrrl"]
+[gd_scene load_steps=8 format=3 uid="uid://cvd01j06ajrrl"]
 
 [ext_resource type="Script" path="res://Scripts/EnterProductPopup.cs" id="1_fypxt"]
 [ext_resource type="StyleBox" uid="uid://bnur8fsil514a" path="res://TransparentBackground.tres" id="1_neoy3"]
 [ext_resource type="StyleBox" uid="uid://xwjgrwabjh1p" path="res://ErrorInput.tres" id="2_6hkfg"]
+[ext_resource type="StyleBox" uid="uid://xqjy03ibbblb" path="res://PanelOpaque.tres" id="4_biw26"]
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="4_lipeh"]
 
 [sub_resource type="Theme" id="Theme_wvy3q"]
@@ -19,41 +20,34 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = ExtResource("1_neoy3")
 script = ExtResource("1_fypxt")
-NameLineEdit = NodePath("VBoxContainer/HBoxContainer/VBoxContainer/Name")
-PriceLineEdit = NodePath("VBoxContainer/HBoxContainer/VBoxContainer/Price")
-GSTBox = NodePath("VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/GST")
-PSTBox = NodePath("VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/PST")
-EnviromentalFeeBox = NodePath("VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/EnvironmentalFee")
-BottleDepositBox = NodePath("VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/BottleDepositFee")
-CreateButton = NodePath("VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Create")
+NameLineEdit = NodePath("Panel/VBoxContainer/Name")
+PriceLineEdit = NodePath("Panel/VBoxContainer/Price")
+GSTBox = NodePath("Panel/VBoxContainer/HBoxContainer2/GST")
+PSTBox = NodePath("Panel/VBoxContainer/HBoxContainer2/PST")
+EnviromentalFeeBox = NodePath("Panel/VBoxContainer/HBoxContainer2/EnvironmentalFee")
+BottleDepositBox = NodePath("Panel/VBoxContainer/HBoxContainer2/BottleDepositFee")
+CreateButton = NodePath("Panel/VBoxContainer/HBoxContainer/Create")
 ErrorStyle = ExtResource("2_6hkfg")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="Panel" type="Panel" parent="."]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.2
+anchor_right = 0.75
+anchor_bottom = 0.8
+theme_override_styles/panel = ExtResource("4_biw26")
 
-[node name="Margin" type="Control" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.7
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Margin2" type="Control" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.2
+anchor_top = 0.2
+anchor_right = 0.8
+anchor_bottom = 0.8
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Title" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = SubResource("Theme_wvy3q")
@@ -62,73 +56,64 @@ text = "Add product
 label_settings = ExtResource("4_lipeh")
 horizontal_alignment = 1
 
-[node name="Name" type="LineEdit" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Name" type="LineEdit" parent="Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = SubResource("Theme_rrwmo")
 placeholder_text = "Enter product name"
 alignment = 1
 
-[node name="Price" type="LineEdit" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Price" type="LineEdit" parent="Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 placeholder_text = "Enter price"
 alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="GST" type="CheckBox" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+[node name="GST" type="CheckBox" parent="Panel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "GST"
 
-[node name="PST" type="CheckBox" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+[node name="PST" type="CheckBox" parent="Panel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "PST"
 
-[node name="EnvironmentalFee" type="CheckBox" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+[node name="EnvironmentalFee" type="CheckBox" parent="Panel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "ENVIRO"
 
-[node name="BottleDepositFee" type="CheckBox" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+[node name="BottleDepositFee" type="CheckBox" parent="Panel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "BOTTLE"
 
-[node name="Margin" type="Control" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Margin" type="Control" parent="Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Create" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Create" type="Button" parent="Panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 disabled = true
 text = "Create"
 
-[node name="Cancel" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Cancel" type="Button" parent="Panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Cancel
 "
 
-[node name="Margin" type="Control" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Margin2" type="Control" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.7
-
-[connection signal="text_changed" from="VBoxContainer/HBoxContainer/VBoxContainer/Name" to="." method="_OnNameLineEditChanged"]
-[connection signal="text_changed" from="VBoxContainer/HBoxContainer/VBoxContainer/Price" to="." method="_OnPriceLineEditChanged"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Create" to="." method="_OnCreateButtonPressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/Cancel" to="." method="_OnCancelButtonPressed"]
+[connection signal="text_changed" from="Panel/VBoxContainer/Name" to="." method="_OnNameLineEditChanged"]
+[connection signal="text_changed" from="Panel/VBoxContainer/Price" to="." method="_OnPriceLineEditChanged"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer/Create" to="." method="_OnCreateButtonPressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer/Cancel" to="." method="_OnCancelButtonPressed"]
