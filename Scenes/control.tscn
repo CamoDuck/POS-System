@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://b3hvcd7tbj6rj"]
+[gd_scene load_steps=16 format=3 uid="uid://b3hvcd7tbj6rj"]
 
 [ext_resource type="Script" path="res://Scripts/ControlScript.cs" id="1_aiqpa"]
 [ext_resource type="Texture2D" uid="uid://csv5pcwb0b0ad" path="res://Images/C3F56112-ACAF-48AC-A818-0C7D375D81A9.PNG" id="1_ldkee"]
@@ -11,6 +11,7 @@
 [ext_resource type="StyleBox" uid="uid://cs1y6le03unjk" path="res://RedButton.tres" id="8_afa7q"]
 [ext_resource type="PackedScene" uid="uid://bo8lphkr0246i" path="res://Scenes/QuantityPopup.tscn" id="8_wyh3o"]
 [ext_resource type="PackedScene" uid="uid://bbrrojoxwp5y0" path="res://Scenes/AddItemByNamePopup.tscn" id="11_og3yy"]
+[ext_resource type="PackedScene" uid="uid://dcl04flixpnhx" path="res://Scenes/CashPaymentPopup.tscn" id="12_kr6i1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_21ehd"]
 bg_color = Color(0.231373, 0.478431, 0.384314, 1)
@@ -239,7 +240,12 @@ layout_mode = 1
 visible = false
 layout_mode = 1
 
+[node name="CashPaymentPopup" parent="." instance=ExtResource("12_kr6i1")]
+visible = false
+layout_mode = 1
+
 [connection signal="child_order_changed" from="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items" to="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer" method="OnListChange"]
+[connection signal="pressed" from="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/Pay Cash" to="CashPaymentPopup" method="_OnStartButtonClick"]
 [connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
 [connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
 [connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/50PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [50]]

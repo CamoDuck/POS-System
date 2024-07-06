@@ -89,6 +89,8 @@ public partial class ItemScrollContainer : ScrollContainer
         subTotalLabel.Text = $"SubTotal : {String.Format("{0:C}", subtotal)}";
         totalGSTLabel.Text = $"Total GST : {String.Format("{0:C}", totalGST)}";
         totalPSTLabel.Text = $"Total PST : {String.Format("{0:C}", totalPST)}";
+
+        Global.total = total;
     }
 
 }

@@ -1,0 +1,104 @@
+[gd_scene load_steps=2 format=3 uid="uid://8vs84j3n71ra"]
+
+[ext_resource type="Script" path="res://Scripts/Keypad.cs" id="1_sep4o"]
+
+[node name="Keypad" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_sep4o")
+
+[node name="GridContainer2" type="GridContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 3
+
+[node name="1" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "1"
+
+[node name="2" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "2"
+
+[node name="3" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "3"
+
+[node name="4" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "4"
+
+[node name="5" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "5"
+
+[node name="6" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "6"
+
+[node name="7" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "7"
+
+[node name="8" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "8"
+
+[node name="9" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "9"
+
+[node name="dot" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "."
+
+[node name="0" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "0"
+
+[node name="backspace" type="Button" parent="GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "DEL"
+
+[connection signal="pressed" from="GridContainer2/1" to="." method="_OnKeyPressed" binds= [1]]
+[connection signal="pressed" from="GridContainer2/2" to="." method="_OnKeyPressed" binds= [2]]
+[connection signal="pressed" from="GridContainer2/3" to="." method="_OnKeyPressed" binds= [3]]
+[connection signal="pressed" from="GridContainer2/4" to="." method="_OnKeyPressed" binds= [4]]
+[connection signal="pressed" from="GridContainer2/5" to="." method="_OnKeyPressed" binds= [5]]
+[connection signal="pressed" from="GridContainer2/6" to="." method="_OnKeyPressed" binds= [6]]
+[connection signal="pressed" from="GridContainer2/7" to="." method="_OnKeyPressed" binds= [7]]
+[connection signal="pressed" from="GridContainer2/8" to="." method="_OnKeyPressed" binds= [8]]
+[connection signal="pressed" from="GridContainer2/9" to="." method="_OnKeyPressed" binds= [9]]
+[connection signal="pressed" from="GridContainer2/dot" to="." method="_OnKeyPressed" binds= [-2]]
+[connection signal="pressed" from="GridContainer2/0" to="." method="_OnKeyPressed" binds= [0]]
+[connection signal="pressed" from="GridContainer2/backspace" to="." method="_OnKeyPressed" binds= [-1]]

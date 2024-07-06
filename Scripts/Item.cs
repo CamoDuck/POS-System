@@ -19,6 +19,8 @@ public partial class Item : Control
 
     StyleBoxFlat stylebox;
 
+    Global.Product values;
+
     bool selected = false;
     Color defaultColor = new Color(0.9f, 0.9f, 0f, 0f);
 
@@ -99,6 +101,7 @@ public partial class Item : Control
 
     public void SetItemValues(Global.Product values)
     {
+        this.values = values;
         originalPrice = values.price;
         SetName(values.name);
         SetPrice(values.price);
@@ -167,6 +170,21 @@ public partial class Item : Control
     void SetBottleDepositFee(bool value)
     {
         bottleDepositFeeEnabled = value;
+    }
+
+    public int GetId()
+    {
+        return values.id;
+    }
+
+    public int GetQuantity()
+    {
+        return quantity;
+    }
+
+    public decimal GetDiscount()
+    {
+        return discountPercent;
     }
 
     public decimal GetSingleOriginalPrice()

@@ -23,6 +23,7 @@ public partial class ControlScript : Control
 
     public override void _EnterTree()
     {
+        Global.sceneTree = GetTree();
         Global.CS = this; // TESTING
 
         Item.ITEM_SCENE = ITEM_SCENE;
@@ -160,5 +161,8 @@ public partial class ControlScript : Control
     {
         addItemByNamePopup.Open();
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///
 
 }

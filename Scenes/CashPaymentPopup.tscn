@@ -1,0 +1,118 @@
+[gd_scene load_steps=9 format=3 uid="uid://dcl04flixpnhx"]
+
+[ext_resource type="StyleBox" uid="uid://bnur8fsil514a" path="res://TransparentBackground.tres" id="1_3vtt2"]
+[ext_resource type="Script" path="res://Scripts/CashPaymentPopup.cs" id="1_wlns6"]
+[ext_resource type="StyleBox" uid="uid://xqjy03ibbblb" path="res://PanelOpaque.tres" id="2_s88x2"]
+[ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="3_0yr82"]
+[ext_resource type="PackedScene" uid="uid://8vs84j3n71ra" path="res://Scenes/keypad.tscn" id="5_as6gv"]
+
+[sub_resource type="Theme" id="Theme_65wde"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ku4bb"]
+font_size = 15
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Theme" id="Theme_sd5s6"]
+
+[node name="CashPaymentPopup" type="Control" node_paths=PackedStringArray("totalLabel", "cashGiven", "cashReturn")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wlns6")
+totalLabel = NodePath("Panel/Panel/VBoxContainer/Total")
+cashGiven = NodePath("Panel/Panel/VBoxContainer/CashGiven")
+cashReturn = NodePath("Panel/Panel/VBoxContainer/CashReturn")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_3vtt2")
+
+[node name="Panel" type="Panel" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.2
+anchor_right = 0.75
+anchor_bottom = 0.8
+theme_override_styles/panel = ExtResource("2_s88x2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.2
+anchor_top = 0.2
+anchor_right = 0.8
+anchor_bottom = 0.8
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="Panel/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_65wde")
+text = "Add product
+"
+label_settings = ExtResource("3_0yr82")
+horizontal_alignment = 1
+
+[node name="Total" type="Label" parent="Panel/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_65wde")
+text = "Total
+"
+label_settings = SubResource("LabelSettings_ku4bb")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="CashGiven" type="SpinBox" parent="Panel/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+theme = SubResource("Theme_sd5s6")
+max_value = 10000.0
+step = 0.05
+alignment = 1
+update_on_text_changed = true
+prefix = "$"
+select_all_on_focus = true
+
+[node name="Keypad" parent="Panel/Panel/VBoxContainer" node_paths=PackedStringArray("box") instance=ExtResource("5_as6gv")]
+layout_mode = 2
+box = NodePath("../CashGiven")
+
+[node name="CashReturn" type="Label" parent="Panel/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_65wde")
+text = "Return Cash"
+label_settings = SubResource("LabelSettings_ku4bb")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Confirm" type="Button" parent="Panel/Panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Confirm
+"
+
+[node name="Close" type="Button" parent="Panel/Panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Close
+"
+
+[connection signal="value_changed" from="Panel/Panel/VBoxContainer/CashGiven" to="." method="_OnValueChanged"]
+[connection signal="pressed" from="Panel/Panel/VBoxContainer/HBoxContainer/Confirm" to="." method="_OnConfirmPressed"]
+[connection signal="pressed" from="Panel/Panel/VBoxContainer/HBoxContainer/Close" to="." method="_OnClosePressed"]

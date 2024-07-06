@@ -73,6 +73,9 @@ public partial class AddItemByNamePopup : Control
         List<string> types = Global.GetProductTypes();
 
         typeButton.AddItem("All", 0);
+
+        if (types == null) { return; }
+
         foreach (string type in types)
         {
             typeButton.AddItem(type);
