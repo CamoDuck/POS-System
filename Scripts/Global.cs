@@ -1,13 +1,20 @@
 using System;
 using System.Data;
 using System.Linq;
-using System.Reflection.Metadata;
 using Godot;
 using Microsoft.Data.Sqlite;
 using System.IO.Ports;
 using System.Collections.Generic;
 using System.Drawing.Printing;
-using System.Data.Common;
+
+using System.Text;
+using System.Net.Sockets;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.IO;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 
 public static class Global
 {
@@ -45,6 +52,7 @@ public static class Global
 
 
     public static decimal total = 0;
+    public static decimal subtotal = 0;
     public static SceneTree sceneTree;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -90,13 +98,14 @@ public static class Global
         return multipliedTotal;
     }
 
+
     ///////////////////////////////////////////////////////////////////////////
     // Barcode Scannner 
     ///////////////////////////////////////////////////////////////////////////
 
     [Signal] public delegate void BarcodeReadEventHandler(string barcode);
 
-    static SerialPort port = null;
+    static System.IO.Ports.SerialPort port = null;
     static List<Action<string>> callbacks = new List<Action<string>>();
 
     public static void ConnectScanner(Action<string> callback)
@@ -326,7 +335,6 @@ public static class Global
         {
             AddPurchasedItem(id, item);
         }
-
     }
 
     static void AddPurchasedItem(long PurchaseId, Item item)
@@ -338,6 +346,85 @@ public static class Global
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // Selected Item 
+    ///////////////////////////////////////////////////////////////////////////
+
+    public static readonly string SELECTED_ITEMS_GROUP_NAME = "SelectedItems";
+
+    static public bool IsAnySelected()
+    {
+        return GetSelectedCount() > 0;
+    }
+
+    static public int GetSelectedCount()
+    {
+        return GetSelected().Count;
+    }
+
+    static public Godot.Collections.Array<Node> GetSelected()
+    {
+        return sceneTree.GetNodesInGroup(SELECTED_ITEMS_GROUP_NAME);
+    }
+
+    static public void SelectAllItems()
+    {
+        foreach (Node item in sceneTree.GetNodesInGroup("Items"))
+        {
+            if (!item.IsInGroup(SELECTED_ITEMS_GROUP_NAME))
+            {
+                item.AddToGroup(SELECTED_ITEMS_GROUP_NAME);
+            }
+        }
+        UpdateItemsSelectedStatus();
+    }
+
+    static public void DeSelectAllItems()
+    {
+        foreach (Node item in sceneTree.GetNodesInGroup(SELECTED_ITEMS_GROUP_NAME))
+        {
+            item.RemoveFromGroup(SELECTED_ITEMS_GROUP_NAME);
+        }
+        UpdateItemsSelectedStatus();
+    }
+
+    static void UpdateItemsSelectedStatus()
+    {
+        foreach (Item item in sceneTree.GetNodesInGroup("Items"))
+        {
+            item.UpdateSelectedColor();
+        }
+    }
+
+    static public void DeleteSelectedItems()
+    {
+        Godot.Collections.Array<Node> items = GetSelected();
+        foreach (Node item in items)
+        {
+            item.QueueFree();
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Item 
+    ///////////////////////////////////////////////////////////////////////////
+
+    static public Godot.Collections.Array<Node> GetAllItems()
+    {
+        return sceneTree.GetNodesInGroup("Items");
+    }
+
+    static public Item GetItem(int index)
+    {
+        Node[] items = sceneTree.GetNodesInGroup("Items").ToArray();
+        if (items.Count() == 0)
+        {
+            return null;
+        }
+        return (Item)items.Last();
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////
     // MISC 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -345,5 +432,238 @@ public static class Global
     {
         return e is InputEventMouseButton mouseEvent && !mouseEvent.Pressed;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Printing 
+    ///////////////////////////////////////////////////////////////////////////
+    // static readonly string PORT_NAME = "RONGTA 80mm Series Printer";
+
+    static byte lineSpacing = 30;
+
+    enum Justification { LEFT, MIDDLE, RIGHT };
+
+    static class CMD
+    {
+        public static readonly byte[] ESC_3_n = { 27, 51, 0 };
+        public static readonly byte[] GS_V_m = { 29, 86, 0 };
+        public static readonly byte[] GS_V_m_n = { 29, 86, 0, 0 };
+        public static readonly byte[] DC2_T = { 18, 84 };
+        public static readonly byte[] LF = { 10 };
+        public static readonly byte[] ESC_d_n = { 27, 100, 0 };
+        public static readonly byte[] ESC_dollors_nL_nH = { 27, 36, 0, 0 };
+        public static readonly byte[] GS_dollors_nL_nH = { 29, 36, 0, 0 };
+        public static readonly byte[] GS_w_n = { 29, 119, 0 };
+        public static readonly byte[] GS_h_n = { 29, 104, 0 };
+        public static readonly byte[] GS_f_n = { 29, 102, 0 };
+        public static readonly byte[] GS_H_n = { 29, 72, 0 };
+        public static readonly byte[] GS_k_m_n_ = { 29, 107, 0, 0 };
+
+        public static readonly byte[] GS_exclamationmark_n = { 29, 33, 0 };
+        public static readonly byte[] ESC_a_n = { 27, 97, 0 };
+        public static readonly byte[] CR = { 13 };
+        // public static readonly byte[]  = { };
+        // public static readonly byte[]  = { };
+        // public static readonly byte[]  = { };
+        // public static readonly byte[]  = { };
+        // public static readonly byte[]  = { };
+        // public static readonly byte[]  = { };
+    }
+
+    static string printer = @"\\PC\";
+    static readonly string filePath = @"C:\Users\cubeb\Downloads\Test.txt";
+
+    public static T[] ConcatArray<T>(T[] x, T[] y)
+    {
+        T[] z = new T[x.Length + y.Length];
+        x.CopyTo(z, 0);
+        y.CopyTo(z, x.Length);
+        return z;
+    }
+
+    static void PrintTestPage()
+    {
+        byte[] cmd = CMD.DC2_T;
+        PrintBytes(cmd);
+    }
+
+    public static void PrintBarcode(string pszInfoBuffer, int nOrgx, int nType, int nWidthX, int nHeight, int nHriFontType, int nHriFontPosition)
+    {
+        if (!(nOrgx < 0 || nOrgx > 65535 || nType < 65 || nType > 73 || nWidthX < 2 || nWidthX > 6 || nHeight < 1 || nHeight > 255))
+        {
+            byte[] bytes = Encoding.Default.GetBytes(pszInfoBuffer);
+            int num = CMD.ESC_dollors_nL_nH.Length + CMD.GS_w_n.Length + CMD.GS_h_n.Length + CMD.GS_f_n.Length + CMD.GS_H_n.Length + CMD.GS_k_m_n_.Length + bytes.Length;
+            byte[] array = new byte[num];
+            int num2 = 0;
+            CMD.ESC_dollors_nL_nH[2] = (byte)(nOrgx % 256);
+            CMD.ESC_dollors_nL_nH[3] = (byte)(nOrgx / 256);
+            CMD.ESC_dollors_nL_nH.CopyTo(array, num2);
+            num2 += CMD.ESC_dollors_nL_nH.Length;
+            CMD.GS_w_n[2] = (byte)nWidthX;
+            CMD.GS_w_n.CopyTo(array, num2);
+            num2 += CMD.GS_w_n.Length;
+            CMD.GS_h_n[2] = (byte)nHeight;
+            CMD.GS_h_n.CopyTo(array, num2);
+            num2 += CMD.GS_h_n.Length;
+            CMD.GS_f_n[2] = (byte)((uint)nHriFontType & 1u);
+            CMD.GS_f_n.CopyTo(array, num2);
+            num2 += CMD.GS_f_n.Length;
+            CMD.GS_H_n[2] = (byte)((uint)nHriFontPosition & 3u);
+            CMD.GS_H_n.CopyTo(array, num2);
+            num2 += CMD.GS_H_n.Length;
+            CMD.GS_k_m_n_[2] = (byte)nType;
+            CMD.GS_k_m_n_[3] = (byte)bytes.Length;
+            CMD.GS_k_m_n_.CopyTo(array, num2);
+            num2 += CMD.GS_k_m_n_.Length;
+            bytes.CopyTo(array, num2);
+            PrintBytes(array);
+        }
+    }
+
+    /// <summary>
+    /// distance * 0.125mm
+    /// </summary>
+    /// <param name="distance"></param>
+    static void CutPaper(byte distance = 0)
+    {
+        byte[] cmd = CMD.GS_V_m_n;
+        cmd[2] = 66;
+        cmd[3] = distance;
+
+        PrintBytes(cmd);
+    }
+
+    /// <summary>
+    /// distance * 0.125mm
+    /// </summary>
+    /// <param name="distance"></param>
+    static void PrintSpace(byte distance)
+    {
+        byte prevDistance = lineSpacing;
+        SetLineSpacing(distance);
+
+        PrintEmptyLine();
+
+        SetLineSpacing(prevDistance);
+    }
+
+    static void SetLineSpacing(byte distance)
+    {
+        lineSpacing = distance;
+        byte[] cmd = CMD.ESC_3_n;
+        cmd[2] = distance;
+        PrintBytes(cmd);
+    }
+
+    static void PrintEmptyLine(byte lines = 1)
+    {
+        byte[] cmd = CMD.ESC_d_n;
+        cmd[2] = lines;
+
+        PrintBytes(cmd);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="size">0-7</param>
+    /// <param name="justification">left=0, center=1, right=2</param>
+    static void PrintLine(string text, int size = 0, Justification justification = 0)
+    {
+        byte[] widths = new byte[8] { 0, 16, 32, 48, 64, 80, 96, 112 };
+        byte[] heights = new byte[8] { 0, 1, 2, 3, 4, 5, 6, 7 };
+        byte[] cmd = CMD.GS_exclamationmark_n;
+        cmd[2] = (byte)(widths[size] + heights[size]);
+        PrintBytes(cmd);
+
+        cmd = CMD.ESC_a_n;
+        cmd[2] = (byte)justification;
+        PrintBytes(cmd);
+
+        cmd = CMD.LF;
+        byte[] byteText = Encoding.Default.GetBytes(text);
+
+        PrintBytes(ConcatArray(cmd, byteText));
+
+
+    }
+
+    static void PrintBytes(byte[] data)
+    {
+        File.WriteAllBytes(filePath, data);
+        File.Copy(filePath, printer);
+    }
+
+    static void ConnectToPrinter()
+    {
+        foreach (string printerName in PrinterSettings.InstalledPrinters)
+        {
+            printer = printer + printerName;
+            break;
+        }
+    }
+
+    static public void PrintReceipt()
+    {
+        ConnectToPrinter();
+
+        SetLineSpacing(5);
+
+        PrintLine("SOZAIYA", 1, Justification.MIDDLE);
+        PrintLine("2906 EAST 2ND AVE", 0, Justification.MIDDLE);
+        PrintLine("VANCOUVER, BC V5M 1E6", 0, Justification.MIDDLE);
+        PrintLine("INSTAGRAM.COM/SOZAIYA", 0, Justification.MIDDLE);
+        PrintLine("Authentic Japanese Goods", 0, Justification.MIDDLE);
+        PrintEmptyLine(2);
+
+        // Print items
+        foreach (Item item in GetAllItems())
+        {
+            string[] texts = item.ToText();
+            foreach (string text in texts)
+            {
+                if (text == null) { continue; }
+                PrintLine(text);
+            }
+            PrintEmptyLine();
+        }
+
+        PrintEmptyLine(2);
+        PrintLine($"Subtotal".PadRight(39, ' ') + $"{subtotal:C}".PadRight(9, ' '));
+        PrintEmptyLine();
+        PrintLine($"Total".PadRight(39, ' ') + $"{total:C}".PadRight(9, ' '));
+
+        PrintEmptyLine();
+        PrintLine("Thank you for shopping with us");
+        PrintEmptyLine();
+
+        string barcodeNum = "012345678901";
+        PrintLine($"Order #{barcodeNum}", justification: Justification.MIDDLE);
+        PrintBarcode(barcodeNum, 280, 0x41, 2, 80, 0, 0);
+
+        PrintEmptyLine(2);
+        CutPaper();
+    }
+
+
 
 }

@@ -21,7 +21,7 @@ size_flags_vertical = 4
 theme_override_styles/panel = ExtResource("1_neoy3")
 script = ExtResource("1_fypxt")
 NameLineEdit = NodePath("Panel/VBoxContainer/Name")
-PriceLineEdit = NodePath("Panel/VBoxContainer/Price")
+PriceLineEdit = NodePath("Panel/VBoxContainer/HBoxContainer3/Price")
 GSTBox = NodePath("Panel/VBoxContainer/HBoxContainer2/GST")
 PSTBox = NodePath("Panel/VBoxContainer/HBoxContainer2/PST")
 EnviromentalFeeBox = NodePath("Panel/VBoxContainer/HBoxContainer2/EnvironmentalFee")
@@ -63,11 +63,20 @@ theme = SubResource("Theme_rrwmo")
 placeholder_text = "Enter product name"
 alignment = 1
 
-[node name="Price" type="LineEdit" parent="Panel/VBoxContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
+
+[node name="Price" type="LineEdit" parent="Panel/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 placeholder_text = "Enter price"
 alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="Panel/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
@@ -114,6 +123,6 @@ text = "Cancel
 "
 
 [connection signal="text_changed" from="Panel/VBoxContainer/Name" to="." method="_OnNameLineEditChanged"]
-[connection signal="text_changed" from="Panel/VBoxContainer/Price" to="." method="_OnPriceLineEditChanged"]
+[connection signal="text_changed" from="Panel/VBoxContainer/HBoxContainer3/Price" to="." method="_OnPriceLineEditChanged"]
 [connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer/Create" to="." method="_OnCreateButtonPressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer/Cancel" to="." method="_OnCancelButtonPressed"]

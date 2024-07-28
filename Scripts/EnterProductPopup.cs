@@ -120,7 +120,7 @@ public partial class EnterProductPopup : Panel
         bool enviromentalFee = EnviromentalFeeBox.ButtonPressed;
         bool bottleDepositFee = BottleDepositBox.ButtonPressed;
 
-        object[] values = { null, name, price, null, null, gst, pst, enviromentalFee, bottleDepositFee };
+        object[] values = { null, null, name, price, null, null, gst, pst, enviromentalFee, bottleDepositFee };
         return new Global.Product(values.ToList());
     }
 

@@ -4,12 +4,14 @@ using System;
 public partial class QuantityPopup : Panel
 {
     [Export] SpinBox quantityEdit;
+    [Export] Label nameLabel;
 
     Action<int> LabelCallback;
 
     public void Start(string name, int quantity, Action<int> labelCallback)
     {
         this.LabelCallback = labelCallback;
+        nameLabel.Text = name;
         UpdateLabels(quantity);
         Show();
     }

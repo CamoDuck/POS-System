@@ -28,6 +28,7 @@ public partial class CashPaymentPopup : Control
         Close();
 
         Global.AddCustomerPurchase(true, 1);
+        Global.PrintReceipt();
     }
 
     public void _OnClosePressed()

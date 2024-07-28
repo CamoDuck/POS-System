@@ -2,7 +2,6 @@ using Godot;
 using System;
 using System.Threading.Tasks;
 
-
 public partial class ControlScript : Control
 {
     [Export] public Control itemList;
@@ -49,15 +48,6 @@ public partial class ControlScript : Control
         Global.DisconnectScannerAll();
     }
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
-    {
-        if (Input.IsActionJustPressed("Q"))
-        {
-            DeleteSelectedItems();
-        }
-    }
-
     // Not called on the main thread
     public void _OnBarcode(string barcode)
     {
@@ -90,30 +80,6 @@ public partial class ControlScript : Control
         Item.NewItem(values);
     }
 
-    bool IsAnySelected()
-    {
-        return GetSelectedCount() > 0;
-    }
-
-    int GetSelectedCount()
-    {
-        return GetSelected().Count;
-    }
-
-    Godot.Collections.Array<Node> GetSelected()
-    {
-        return GetTree().GetNodesInGroup("SelectedItems");
-    }
-
-    void DeleteSelectedItems()
-    {
-        Godot.Collections.Array<Node> items = GetSelected();
-        foreach (Node item in items)
-        {
-            item.QueueFree();
-        }
-    }
-
 
     ///////////////////////////////////////////////////////////////////////////
     // Buttons
@@ -128,11 +94,10 @@ public partial class ControlScript : Control
 
     public void _OnDiscountButtonPressed(int percent)
     {
-
-        var Nodes = GetSelected();
+        var Nodes = Global.GetSelected();
         if (Nodes.Count == 0)
         {
-            Item lastItem = itemListScroll.GetItem(-1);
+            Item lastItem = Global.GetItem(-1);
             if (lastItem == null)
             {
                 return;
@@ -163,6 +128,30 @@ public partial class ControlScript : Control
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    ///
+
+    public void _DeleteButtonPressed()
+    {
+        Global.DeleteSelectedItems();
+    }
+
+    public void _DeSelectAllButtonPressed()
+    {
+        Global.DeSelectAllItems();
+    }
+
+    public void _SelectAllButtonPressed()
+    {
+        GD.Print("ran");
+        Global.SelectAllItems();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+
+    public void _OnPayCardPressed()
+    {
+        Global.AddCustomerPurchase(false, 0);
+
+    }
 
 }

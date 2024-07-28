@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 public partial class Item : Control
@@ -21,7 +22,6 @@ public partial class Item : Control
 
     Global.Product values;
 
-    bool selected = false;
     Color defaultColor = new Color(0.9f, 0.9f, 0f, 0f);
 
     decimal originalPrice;
@@ -47,45 +47,6 @@ public partial class Item : Control
         RemoveDiscount();
     }
 
-    public void OnGuiInput(InputEvent e)
-    {
-        if (Global.IsEventClickDown(e))
-        {
-            OnItemClicked();
-        }
-    }
-
-    public void _OnQuantityClicked(InputEvent e)
-    {
-        if (Global.IsEventClickDown(e))
-        {
-            quantityPopup.Start(GetName(), quantity, SetQuantity);
-        }
-    }
-
-    void OnItemClicked()
-    {
-        Color color = defaultColor;
-        selected = !selected;
-        if (selected)
-        {
-            color.A = 1f;
-            AddToGroup("SelectedItems");
-        }
-        else
-        {
-            RemoveFromGroup("SelectedItems");
-        }
-        stylebox.BgColor = color;
-
-    }
-
-    public void RemoveDiscount()
-    {
-        discountPercent = 0;
-        EmitSignal(SignalName.PriceChanged, true);
-    }
-
     static public Node NewItem(Global.Product values, int index = -1)
     {
         Item newItem = ITEM_SCENE.Instantiate<Item>();
@@ -97,6 +58,41 @@ public partial class Item : Control
         itemList.AddToList(newItem, true, index);
 
         return newItem;
+    }
+
+    public void _OnQuantityClicked()
+    {
+        GD.Print("Pressed");
+        quantityPopup.Start(GetName(), quantity, SetQuantity);
+    }
+
+    public void _OnItemClicked()
+    {
+        if (IsInGroup(Global.SELECTED_ITEMS_GROUP_NAME))
+        {
+            RemoveFromGroup(Global.SELECTED_ITEMS_GROUP_NAME);
+        }
+        else
+        {
+            AddToGroup(Global.SELECTED_ITEMS_GROUP_NAME);
+        }
+        UpdateSelectedColor();
+    }
+
+    public void UpdateSelectedColor()
+    {
+        Color color = defaultColor;
+        if (IsInGroup(Global.SELECTED_ITEMS_GROUP_NAME))
+        {
+            color.A = 1f;
+        }
+        stylebox.BgColor = color;
+    }
+
+    public void RemoveDiscount()
+    {
+        discountPercent = 0;
+        EmitSignal(SignalName.PriceChanged, true);
     }
 
     public void SetItemValues(Global.Product values)
@@ -230,6 +226,16 @@ public partial class Item : Control
     public bool isDiscounted()
     {
         return discountPercent > 0;
+    }
+
+    public string[] ToText()
+    {
+        string itemText = $"{GetName()}";
+        string quantityText = $"     {GetQuantity()} @ {GetSingleOriginalPrice():C}".PadRight(39, ' ') + $"{GetNoDiscountPrice():C}".PadRight(9, ' ');
+        string discountText = isDiscounted() ? $"     DISCOUNT {GetDiscount() * 100}%".PadRight(38, ' ') + $"-{GetNoDiscountPrice() - GetSubTotalPrice():C}".PadRight(10, ' ') : null;
+
+        string[] ret = { itemText, quantityText, discountText };
+        return ret;
     }
 
 }

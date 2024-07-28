@@ -7,7 +7,7 @@
 
 [sub_resource type="Theme" id="Theme_5wxsg"]
 
-[node name="QuantityPopup" type="Panel" node_paths=PackedStringArray("quantityEdit")]
+[node name="QuantityPopup" type="Panel" node_paths=PackedStringArray("quantityEdit", "nameLabel")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -16,6 +16,7 @@ grow_vertical = 2
 theme_override_styles/panel = ExtResource("1_u03e3")
 script = ExtResource("2_ils8q")
 quantityEdit = NodePath("Panel/VBoxContainer/Quantity")
+nameLabel = NodePath("Panel/VBoxContainer/Name")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1

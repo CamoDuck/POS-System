@@ -45,15 +45,7 @@ public partial class ItemScrollContainer : ScrollContainer
         itemList.MoveChild(newNode, index);
     }
 
-    public Item GetItem(int index)
-    {
-        Node[] items = GetTree().GetNodesInGroup("Items").ToArray();
-        if (items.Count() == 0)
-        {
-            return null;
-        }
-        return (Item)items.Last();
-    }
+
 
     void OnListChange()
     {
@@ -90,6 +82,7 @@ public partial class ItemScrollContainer : ScrollContainer
         totalGSTLabel.Text = $"Total GST : {String.Format("{0:C}", totalGST)}";
         totalPSTLabel.Text = $"Total PST : {String.Format("{0:C}", totalPST)}";
 
+        Global.subtotal = subtotal;
         Global.total = total;
     }
 
