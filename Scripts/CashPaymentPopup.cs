@@ -3,6 +3,7 @@ using System;
 
 public partial class CashPaymentPopup : Control
 {
+    [Export] RecieptConfirmPopup recieptConfirmPopup;
     [Export] Label totalLabel;
     [Export] SpinBox cashGiven;
     [Export] Label cashReturn;
@@ -28,7 +29,7 @@ public partial class CashPaymentPopup : Control
         Close();
 
         Global.AddCustomerPurchase(true, 1);
-        Global.PrintReceipt();
+        recieptConfirmPopup.Start();
     }
 
     public void _OnClosePressed()

@@ -9,6 +9,7 @@ public partial class EnterProductPopup : Panel
 
     [Export] LineEdit NameLineEdit;
     [Export] LineEdit PriceLineEdit;
+    [Export] OptionButton ItemTypes;
     [Export] CheckBox GSTBox;
     [Export] CheckBox PSTBox;
     [Export] CheckBox EnviromentalFeeBox;

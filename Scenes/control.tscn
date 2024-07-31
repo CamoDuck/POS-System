@@ -22,68 +22,88 @@ bg_color = Color(0.231373, 0.478431, 0.384314, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_q1rjj"]
 font_color = Color(0, 0, 0, 1)
 
-[node name="Control" type="Control" node_paths=PackedStringArray("itemList", "itemListScroll", "totalLabel", "enterProductPopup", "quantityPopup", "addItemByNamePopup")]
+[node name="Control" type="Control" node_paths=PackedStringArray("itemList", "itemListScroll", "totalLabel", "enterProductPopup", "quantityPopup", "recieptConfirmPopup", "mainViewport", "secondViewport", "addItemByNamePopup")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_vertical = 3
 script = ExtResource("1_aiqpa")
-itemList = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items")
-itemListScroll = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer")
-totalLabel = NodePath("VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer/Total")
+itemList = NodePath("VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items")
+itemListScroll = NodePath("VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer")
+totalLabel = NodePath("VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer/Total")
 enterProductPopup = NodePath("EnterProductPopup")
 quantityPopup = NodePath("QuantityPopup")
+recieptConfirmPopup = NodePath("RecieptConfirmPopup")
 ITEM_SCENE = ExtResource("4_rr83q")
 DISCOUNT_SCENE = ExtResource("3_qvbo2")
+mainViewport = NodePath("VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport")
+secondViewport = NodePath("Window/SubViewportContainer2/SubViewport")
 addItemByNamePopup = NodePath("AddItemByNamePopup")
 
-[node name="VSplitContainer" type="VSplitContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 50
-split_offset = 100
-dragger_visibility = 2
+theme_override_constants/separation = 0
 
-[node name="Header" type="PanelContainer" parent="VSplitContainer"]
+[node name="Header" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_21ehd")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/Header"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Header"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="VSplitContainer/Header/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/Header/HBoxContainer"]
 clip_contents = true
 layout_mode = 2
 texture = ExtResource("1_ldkee")
 expand_mode = 2
 stretch_mode = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 5.0
 
-[node name="Item List" type="PanelContainer" parent="VSplitContainer/HBoxContainer"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
+stretch = true
+
+[node name="MainSubViewport" type="SubViewport" parent="VBoxContainer/HBoxContainer/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(765, 540)
+render_target_update_mode = 4
+
+[node name="Item List" type="PanelContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("2_byrxm")
 
-[node name="MarginContainer" type="MarginContainer" parent="VSplitContainer/HBoxContainer/Item List"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer"]
 layout_mode = 2
 
-[node name="ItemScrollContainer" type="ScrollContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer" node_paths=PackedStringArray("totalLabel", "subTotalLabel", "totalGSTLabel", "totalPSTLabel")]
+[node name="ItemScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer" node_paths=PackedStringArray("totalLabel", "subTotalLabel", "totalGSTLabel", "totalPSTLabel")]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 5.0
@@ -95,23 +115,23 @@ subTotalLabel = NodePath("../HBoxContainer/GridContainer/SubTotal")
 totalGSTLabel = NodePath("../HBoxContainer/GridContainer/Total GST")
 totalPSTLabel = NodePath("../HBoxContainer/GridContainer/Total PST")
 
-[node name="Items" type="VBoxContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer"]
+[node name="Items" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = SubResource("Theme_6ehp7")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 columns = 2
 
-[node name="Total GST" type="Label" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+[node name="Total GST" type="Label" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -120,7 +140,7 @@ text = "Total GST: $
 "
 label_settings = SubResource("LabelSettings_q1rjj")
 
-[node name="Total PST" type="Label" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+[node name="Total PST" type="Label" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -129,7 +149,7 @@ text = "Total PST: $
 "
 label_settings = SubResource("LabelSettings_q1rjj")
 
-[node name="SubTotal" type="Label" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+[node name="SubTotal" type="Label" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -138,10 +158,10 @@ text = "SubTotal: $
 "
 label_settings = SubResource("LabelSettings_q1rjj")
 
-[node name="Control" type="Control" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
 layout_mode = 2
 
-[node name="Total" type="Label" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+[node name="Total" type="Label" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -150,68 +170,68 @@ text = "Total: $
 "
 label_settings = ExtResource("3_uay47")
 
-[node name="Pay Cash" type="Button" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Pay Cash" type="Button" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 30
 text = "Pay Cash"
 
-[node name="Pay Card" type="Button" parent="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Pay Card" type="Button" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 30
 text = "Pay Card"
 
-[node name="Control Panel" type="PanelContainer" parent="VSplitContainer/HBoxContainer"]
+[node name="Control Panel" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("2_byrxm")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="AddItemByName" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer"]
+[node name="AddItemByName" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "Add Item By Name"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="10PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3"]
+[node name="10PercentDiscount" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 15
 text = "10% Discount
 "
 
-[node name="25PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3"]
+[node name="25PercentDiscount" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 15
 text = "25% Discount
 "
 
-[node name="50PercentDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3"]
+[node name="50PercentDiscount" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 15
 text = "50% Discount"
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RemoveDiscount" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer4"]
+[node name="RemoveDiscount" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = ExtResource("8_afa7q")
@@ -221,27 +241,27 @@ theme_override_styles/focus = ExtResource("8_afa7q")
 text = "REMOVE DISCOUNT
 "
 
-[node name="HBoxContainer5" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+[node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HBoxContainer6" type="HBoxContainer" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+[node name="HBoxContainer6" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Select All" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6"]
+[node name="Select All" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 15
 text = "SELECT ALL"
 
-[node name="DeSelect All" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6"]
+[node name="DeSelect All" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 15
 text = "DE-SELECT ALL"
 
-[node name="Delete" type="Button" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6"]
+[node name="Delete" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 15
@@ -251,7 +271,7 @@ theme_override_styles/disabled = ExtResource("8_afa7q")
 theme_override_styles/focus = ExtResource("8_afa7q")
 text = "DELETE"
 
-[node name="Control" type="Control" parent="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer"]
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 9.0
@@ -270,22 +290,46 @@ layout_mode = 1
 visible = false
 layout_mode = 1
 
-[node name="CashPaymentPopup" parent="." instance=ExtResource("12_kr6i1")]
+[node name="CashPaymentPopup" parent="." node_paths=PackedStringArray("recieptConfirmPopup") instance=ExtResource("12_kr6i1")]
 visible = false
 layout_mode = 1
+recieptConfirmPopup = NodePath("../RecieptConfirmPopup")
 
 [node name="RecieptConfirmPopup" parent="." instance=ExtResource("13_3kmh5")]
 visible = false
 layout_mode = 1
 
-[connection signal="child_order_changed" from="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items" to="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/ItemScrollContainer" method="OnListChange"]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/Pay Cash" to="CashPaymentPopup" method="_OnStartButtonClick"]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Item List/MarginContainer/VBoxContainer/HBoxContainer/Pay Card" to="." method="_OnPayCardPressed"]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/AddItemByName" to="." method="_OnAddItemByNameButtonPressed"]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/50PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [50]]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer4/RemoveDiscount" to="." method="_OnDiscountButtonPressed" binds= [0]]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Select All" to="." method="_SelectAllButtonPressed"]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/DeSelect All" to="." method="_DeSelectAllButtonPressed"]
-[connection signal="pressed" from="VSplitContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Delete" to="." method="_DeleteButtonPressed"]
+[node name="Window" type="Window" parent="."]
+mode = 2
+initial_position = 2
+size = Vector2i(1000, 800)
+
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="Window"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Window/SubViewportContainer2"]
+disable_3d = true
+handle_input_locally = false
+gui_disable_input = true
+size = Vector2i(1000, 800)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[connection signal="child_order_changed" from="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items" to="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer" method="OnListChange"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer/Pay Cash" to="CashPaymentPopup" method="_OnStartButtonClick"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer/Pay Card" to="." method="_OnPayCardPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/AddItemByName" to="." method="_OnAddItemByNameButtonPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/50PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [50]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer4/RemoveDiscount" to="." method="_OnDiscountButtonPressed" binds= [0]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Select All" to="." method="_SelectAllButtonPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/DeSelect All" to="." method="_DeSelectAllButtonPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Delete" to="." method="_DeleteButtonPressed"]

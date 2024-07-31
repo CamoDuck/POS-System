@@ -10,7 +10,7 @@
 
 [sub_resource type="Theme" id="Theme_rrwmo"]
 
-[node name="EnterProductPopup" type="Panel" node_paths=PackedStringArray("NameLineEdit", "PriceLineEdit", "GSTBox", "PSTBox", "EnviromentalFeeBox", "BottleDepositBox", "CreateButton")]
+[node name="EnterProductPopup" type="Panel" node_paths=PackedStringArray("NameLineEdit", "PriceLineEdit", "ItemTypes", "GSTBox", "PSTBox", "EnviromentalFeeBox", "BottleDepositBox", "CreateButton")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -22,6 +22,7 @@ theme_override_styles/panel = ExtResource("1_neoy3")
 script = ExtResource("1_fypxt")
 NameLineEdit = NodePath("Panel/VBoxContainer/Name")
 PriceLineEdit = NodePath("Panel/VBoxContainer/HBoxContainer3/Price")
+ItemTypes = NodePath("Panel/VBoxContainer/HBoxContainer3/Types")
 GSTBox = NodePath("Panel/VBoxContainer/HBoxContainer2/GST")
 PSTBox = NodePath("Panel/VBoxContainer/HBoxContainer2/PST")
 EnviromentalFeeBox = NodePath("Panel/VBoxContainer/HBoxContainer2/EnvironmentalFee")
@@ -73,7 +74,7 @@ size_flags_vertical = 3
 placeholder_text = "Enter price"
 alignment = 1
 
-[node name="OptionButton" type="OptionButton" parent="Panel/VBoxContainer/HBoxContainer3"]
+[node name="Types" type="OptionButton" parent="Panel/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0

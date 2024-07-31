@@ -15,6 +15,10 @@ run/main_scene="res://Scenes/control.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 config/icon="res://Images/icon.svg"
 
+[display]
+
+window/subwindows/embed_subwindows=false
+
 [dotnet]
 
 project/assembly_name="POS System"

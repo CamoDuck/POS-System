@@ -11,6 +11,7 @@ public partial class ControlScript : Control
     // [Export] Control barcodeInput;
     [Export] EnterProductPopup enterProductPopup;
     [Export] QuantityPopup quantityPopup;
+    [Export] RecieptConfirmPopup recieptConfirmPopup;
 
     [Export] PackedScene ITEM_SCENE;
     [Export] PackedScene DISCOUNT_SCENE;
@@ -31,7 +32,16 @@ public partial class ControlScript : Control
 
         Discount.DISCOUNT_SCENE = DISCOUNT_SCENE;
         Discount.itemList = itemListScroll;
+
+        GD.Print("TRIED VIEWPORTS");
+        secondViewport.World2D = mainViewport.World2D;
+        ((SubViewportContainer)mainViewport.GetParent()).Stretch = false;
+        ((SubViewportContainer)mainViewport.GetParent()).Stretch = true;
+        GD.Print("RUNNED VIEWPOETSS");
     }
+
+    [Export] SubViewport mainViewport;
+    [Export] SubViewport secondViewport;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -151,7 +161,7 @@ public partial class ControlScript : Control
     public void _OnPayCardPressed()
     {
         Global.AddCustomerPurchase(false, 0);
-
+        recieptConfirmPopup.Start();
     }
 
 }
