@@ -32,16 +32,7 @@ public partial class ControlScript : Control
 
         Discount.DISCOUNT_SCENE = DISCOUNT_SCENE;
         Discount.itemList = itemListScroll;
-
-        GD.Print("TRIED VIEWPORTS");
-        secondViewport.World2D = mainViewport.World2D;
-        ((SubViewportContainer)mainViewport.GetParent()).Stretch = false;
-        ((SubViewportContainer)mainViewport.GetParent()).Stretch = true;
-        GD.Print("RUNNED VIEWPOETSS");
     }
-
-    [Export] SubViewport mainViewport;
-    [Export] SubViewport secondViewport;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -49,7 +40,20 @@ public partial class ControlScript : Control
         Global.ConnectDb();
         Global.CreateTables();
         Global.ConnectScanner(_OnBarcode);
+
     }
+
+    // double dt = 0;
+
+    // public override void _Process(double delta)
+    // {
+    //     if (dt > 2 && dt < 3)
+    //     {
+    //         dt = 4;
+    //         enterProductPopup.Start();
+    //     }
+    //     dt += delta;
+    // }
 
     public override void _ExitTree()
     {

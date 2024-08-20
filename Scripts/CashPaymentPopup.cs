@@ -29,7 +29,8 @@ public partial class CashPaymentPopup : Control
         Close();
 
         Global.AddCustomerPurchase(true, 1);
-        recieptConfirmPopup.Start();
+        Global.OpenCashDrawer();
+        // recieptConfirmPopup.Start();
     }
 
     public void _OnClosePressed()

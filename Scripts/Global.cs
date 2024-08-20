@@ -55,6 +55,8 @@ public static class Global
     public static decimal subtotal = 0;
     public static SceneTree sceneTree;
 
+    public static decimal priceMarkup = 1.35m;
+
     ///////////////////////////////////////////////////////////////////////////
     // Money 
     ///////////////////////////////////////////////////////////////////////////
@@ -63,6 +65,13 @@ public static class Global
     static readonly decimal PST_PRECENT = 0.07m;
     static readonly decimal ENVIRONMENTAL_FEE = 0.05m;
     static readonly decimal BOTTLE_DEPOSIT_FEE = 0.10m;
+
+    public static decimal ApplyMarkupAndRound(decimal value)
+    {
+        decimal markupPrice = value * priceMarkup;
+        decimal roundedPrice = Math.Round(markupPrice * 20) / 20;
+        return roundedPrice;
+    }
 
     public static decimal CalculateGST(int stock, decimal originalPrice, decimal discountPercent, bool isGST)
     {
@@ -480,7 +489,8 @@ public static class Global
         public static readonly byte[] GS_exclamationmark_n = { 29, 33, 0 };
         public static readonly byte[] ESC_a_n = { 27, 97, 0 };
         public static readonly byte[] CR = { 13 };
-        // public static readonly byte[]  = { };
+
+        public static readonly byte[] ESC_p_m_t1_t2 = { 27, 112, 0, 0, 0 };
         // public static readonly byte[]  = { };
         // public static readonly byte[]  = { };
         // public static readonly byte[]  = { };
@@ -488,7 +498,7 @@ public static class Global
         // public static readonly byte[]  = { };
     }
 
-    static string printer = @"\\PC\";
+    static string printer = @"\\PC\ThermalPrinter";
     static readonly string filePath = @"C:\Users\cubeb\Downloads\Test.txt";
 
     public static T[] ConcatArray<T>(T[] x, T[] y)
@@ -502,6 +512,15 @@ public static class Global
     static void PrintTestPage()
     {
         byte[] cmd = CMD.DC2_T;
+        PrintBytes(cmd);
+    }
+
+    static public void OpenCashDrawer()
+    {
+        byte[] cmd = CMD.ESC_p_m_t1_t2;
+        cmd[2] = 0; // pin 5
+        cmd[3] = 100;
+        cmd[4] = 100;
         PrintBytes(cmd);
     }
 
@@ -613,19 +632,17 @@ public static class Global
         File.Copy(filePath, printer);
     }
 
-    static void ConnectToPrinter()
+    public static void ConnectToPrinter()
     {
         foreach (string printerName in PrinterSettings.InstalledPrinters)
         {
-            printer = printer + printerName;
+            printer = @"\\PC\" + printerName;
             break;
         }
     }
 
     static public void PrintReceipt()
     {
-        ConnectToPrinter();
-
         SetLineSpacing(5);
 
         PrintLine("SOZAIYA", 1, Justification.MIDDLE);

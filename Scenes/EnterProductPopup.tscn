@@ -10,7 +10,7 @@
 
 [sub_resource type="Theme" id="Theme_rrwmo"]
 
-[node name="EnterProductPopup" type="Panel" node_paths=PackedStringArray("NameLineEdit", "PriceLineEdit", "ItemTypes", "GSTBox", "PSTBox", "EnviromentalFeeBox", "BottleDepositBox", "CreateButton")]
+[node name="EnterProductPopup" type="Panel" node_paths=PackedStringArray("NameLineEdit", "PriceLineEdit", "ItemTypes", "GSTBox", "PSTBox", "EnviromentalFeeBox", "BottleDepositBox", "CreateButton", "RealPriceLabel")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -28,6 +28,7 @@ PSTBox = NodePath("Panel/VBoxContainer/HBoxContainer2/PST")
 EnviromentalFeeBox = NodePath("Panel/VBoxContainer/HBoxContainer2/EnvironmentalFee")
 BottleDepositBox = NodePath("Panel/VBoxContainer/HBoxContainer2/BottleDepositFee")
 CreateButton = NodePath("Panel/VBoxContainer/HBoxContainer/Create")
+RealPriceLabel = NodePath("Panel/VBoxContainer/Margin/RealPrice")
 ErrorStyle = ExtResource("2_6hkfg")
 
 [node name="Panel" type="Panel" parent="."]
@@ -106,6 +107,13 @@ text = "BOTTLE"
 [node name="Margin" type="Control" parent="Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="RealPrice" type="Label" parent="Panel/VBoxContainer/Margin"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Price : $"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2

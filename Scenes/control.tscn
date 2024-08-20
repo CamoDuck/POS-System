@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://b3hvcd7tbj6rj"]
+[gd_scene load_steps=20 format=3 uid="uid://b3hvcd7tbj6rj"]
 
 [ext_resource type="Script" path="res://Scripts/ControlScript.cs" id="1_aiqpa"]
 [ext_resource type="Texture2D" uid="uid://csv5pcwb0b0ad" path="res://Images/C3F56112-ACAF-48AC-A818-0C7D375D81A9.PNG" id="1_ldkee"]
@@ -22,7 +22,16 @@ bg_color = Color(0.231373, 0.478431, 0.384314, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_q1rjj"]
 font_color = Color(0, 0, 0, 1)
 
-[node name="Control" type="Control" node_paths=PackedStringArray("itemList", "itemListScroll", "totalLabel", "enterProductPopup", "quantityPopup", "recieptConfirmPopup", "mainViewport", "secondViewport", "addItemByNamePopup")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xdiar"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y5ncf"]
+bg_color = Color(0.231373, 0.47451, 0.384314, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_rm8yc"]
+viewport_path = NodePath("VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport")
+
+[node name="Control" type="Control" node_paths=PackedStringArray("itemList", "itemListScroll", "totalLabel", "enterProductPopup", "quantityPopup", "recieptConfirmPopup", "addItemByNamePopup")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -39,8 +48,6 @@ quantityPopup = NodePath("QuantityPopup")
 recieptConfirmPopup = NodePath("RecieptConfirmPopup")
 ITEM_SCENE = ExtResource("4_rr83q")
 DISCOUNT_SCENE = ExtResource("3_qvbo2")
-mainViewport = NodePath("VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport")
-secondViewport = NodePath("Window/SubViewportContainer2/SubViewport")
 addItemByNamePopup = NodePath("AddItemByNamePopup")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -170,18 +177,6 @@ text = "Total: $
 "
 label_settings = ExtResource("3_uay47")
 
-[node name="Pay Cash" type="Button" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 30
-text = "Pay Cash"
-
-[node name="Pay Card" type="Button" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 30
-text = "Pay Card"
-
 [node name="Control Panel" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -271,10 +266,34 @@ theme_override_styles/disabled = ExtResource("8_afa7q")
 theme_override_styles/focus = ExtResource("8_afa7q")
 text = "DELETE"
 
+[node name="HBoxContainer7" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 9.0
+size_flags_stretch_ratio = 7.0
+
+[node name="HBoxContainer8" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Pay Cash" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer8"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 30
+text = "Pay Cash"
+
+[node name="Pay Card" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer8"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 30
+text = "Pay Card"
+
+[node name="HBoxContainer9" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="EnterProductPopup" parent="." instance=ExtResource("8_4ga1o")]
 visible = false
@@ -300,11 +319,11 @@ visible = false
 layout_mode = 1
 
 [node name="Window" type="Window" parent="."]
-mode = 2
-initial_position = 2
+position = Vector2i(348, 36)
 size = Vector2i(1000, 800)
 
-[node name="SubViewportContainer2" type="SubViewportContainer" parent="Window"]
+[node name="Control" type="Control" parent="Window"]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -312,19 +331,48 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="Window/SubViewportContainer2"]
-disable_3d = true
-handle_input_locally = false
-gui_disable_input = true
-size = Vector2i(1000, 800)
-size_2d_override_stretch = true
-render_target_update_mode = 4
+[node name="PanelContainer" type="PanelContainer" parent="Window/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_xdiar")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/Control/PanelContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Window/Control/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_y5ncf")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Window/Control/PanelContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="Window/Control/PanelContainer/HBoxContainer/PanelContainer/VBoxContainer"]
+clip_contents = true
+layout_mode = 2
+texture = ExtResource("1_ldkee")
+expand_mode = 4
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Window/Control/PanelContainer/HBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+fit_content = true
+
+[node name="ViewportTexture" type="TextureRect" parent="Window/Control/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+texture = SubResource("ViewportTexture_rm8yc")
+stretch_mode = 4
 
 [connection signal="child_order_changed" from="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items" to="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer" method="OnListChange"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer/Pay Cash" to="CashPaymentPopup" method="_OnStartButtonClick"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer/Pay Card" to="." method="_OnPayCardPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/AddItemByName" to="." method="_OnAddItemByNameButtonPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
@@ -333,3 +381,5 @@ render_target_update_mode = 4
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Select All" to="." method="_SelectAllButtonPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/DeSelect All" to="." method="_DeSelectAllButtonPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Delete" to="." method="_DeleteButtonPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer8/Pay Cash" to="CashPaymentPopup" method="_OnStartButtonClick"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer8/Pay Card" to="." method="_OnPayCardPressed"]

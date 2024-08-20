@@ -15,6 +15,7 @@ public partial class EnterProductPopup : Panel
     [Export] CheckBox EnviromentalFeeBox;
     [Export] CheckBox BottleDepositBox;
     [Export] Button CreateButton;
+    [Export] Label RealPriceLabel;
 
     [Export] StyleBoxFlat ErrorStyle;
 
@@ -85,7 +86,13 @@ public partial class EnterProductPopup : Panel
             PriceLineEdit.AddThemeStyleboxOverride("normal", ErrorStyle);
         }
 
+        UpdateRealPrice(value);
         UpdateCreateButton();
+    }
+
+    public void UpdateRealPrice(decimal value)
+    {
+        RealPriceLabel.Text = $"Price : {Global.ApplyMarkupAndRound(value):C}";
     }
 
     public void _OnCreateButtonPressed()
@@ -115,7 +122,7 @@ public partial class EnterProductPopup : Panel
         }
 
         string name = NameLineEdit.Text;
-        double price = double.Parse(PriceLineEdit.Text);
+        double price = double.Parse(RealPriceLabel.Text);
         bool gst = GSTBox.ButtonPressed;
         bool pst = PSTBox.ButtonPressed;
         bool enviromentalFee = EnviromentalFeeBox.ButtonPressed;
