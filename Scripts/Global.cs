@@ -121,7 +121,7 @@ public static class Global
     {
         if (port == null)
         {
-            port = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);
+            port = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
             port.DataReceived += new SerialDataReceivedEventHandler(_OnPortDataReceived);
             // Begin communications 
             port.Open();

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 public partial class ControlScript : Control
@@ -15,6 +16,9 @@ public partial class ControlScript : Control
 
     [Export] PackedScene ITEM_SCENE;
     [Export] PackedScene DISCOUNT_SCENE;
+
+    static string currentBarcode = "";
+    static int barcodeDelay = 20;
 
     public void Print(object s)
     {
@@ -71,6 +75,14 @@ public partial class ControlScript : Control
 
     async void ScanItem(string barcodeID)
     {
+        currentBarcode += barcodeID;
+        await Task.Delay(barcodeDelay);
+        barcodeID = currentBarcode;
+        if (currentBarcode == "") {
+            return;
+        }
+        currentBarcode = "";
+        
         Global.Product values = Global.GetProductByBarcode(barcodeID);
 
         if (values == null)

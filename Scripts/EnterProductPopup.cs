@@ -122,7 +122,7 @@ public partial class EnterProductPopup : Panel
         }
 
         string name = NameLineEdit.Text;
-        double price = double.Parse(RealPriceLabel.Text);
+        decimal price = Global.ApplyMarkupAndRound(decimal.Parse(PriceLineEdit.Text));
         bool gst = GSTBox.ButtonPressed;
         bool pst = PSTBox.ButtonPressed;
         bool enviromentalFee = EnviromentalFeeBox.ButtonPressed;

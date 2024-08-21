@@ -229,10 +229,10 @@ size_flags_vertical = 3
 [node name="RemoveDiscount" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = ExtResource("8_afa7q")
+theme_override_styles/focus = ExtResource("8_afa7q")
 theme_override_styles/hover = ExtResource("8_afa7q")
 theme_override_styles/pressed = ExtResource("8_afa7q")
-theme_override_styles/focus = ExtResource("8_afa7q")
+theme_override_styles/normal = ExtResource("8_afa7q")
 text = "REMOVE DISCOUNT
 "
 
@@ -260,10 +260,10 @@ text = "DE-SELECT ALL"
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = ExtResource("8_afa7q")
-theme_override_styles/hover = ExtResource("8_afa7q")
-theme_override_styles/disabled = ExtResource("8_afa7q")
 theme_override_styles/focus = ExtResource("8_afa7q")
+theme_override_styles/disabled = ExtResource("8_afa7q")
+theme_override_styles/hover = ExtResource("8_afa7q")
+theme_override_styles/normal = ExtResource("8_afa7q")
 text = "DELETE"
 
 [node name="HBoxContainer7" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
@@ -374,10 +374,6 @@ stretch_mode = 4
 
 [connection signal="child_order_changed" from="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items" to="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer" method="OnListChange"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/AddItemByName" to="." method="_OnAddItemByNameButtonPressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/50PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [50]]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer4/RemoveDiscount" to="." method="_OnDiscountButtonPressed" binds= [0]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Select All" to="." method="_SelectAllButtonPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/DeSelect All" to="." method="_DeSelectAllButtonPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Delete" to="." method="_DeleteButtonPressed"]
