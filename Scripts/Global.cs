@@ -152,6 +152,7 @@ public static class Global
     static readonly string dbPath = "database.db";
     static readonly string globalDbPath = ProjectSettings.GlobalizePath(dbPath);
     public static SqliteConnection dbConnection = new SqliteConnection($"Data Source={globalDbPath}");
+    static bool dbExists = File.Exists(Global.globalDbPath);
 
     public static void ConnectDb()
     {
@@ -160,6 +161,7 @@ public static class Global
 
     public static void CreateTables()
     {
+        if (dbExists) { return; }
         string sql = @"
         CREATE TABLE IF NOT EXISTS Products 
             (
@@ -217,6 +219,22 @@ public static class Global
             )";
         command = new SqliteCommand(sql, dbConnection);
         command.ExecuteNonQuery();
+
+        string[] types =
+        {"Deli",
+        "Snack",
+        "Dessert",
+        "Candy",
+        "Drink",
+        "Noodle"};
+
+        foreach (string type in types)
+        {
+            sql = $@"INSERT INTO ProductTypes (Type)
+                VALUES ('{type}');";
+            command = new SqliteCommand(sql, dbConnection);
+            command.ExecuteNonQuery();
+        }
     }
 
     public static void DisconnectDb()

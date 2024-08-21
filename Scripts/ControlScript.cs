@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -78,11 +79,12 @@ public partial class ControlScript : Control
         currentBarcode += barcodeID;
         await Task.Delay(barcodeDelay);
         barcodeID = currentBarcode;
-        if (currentBarcode == "") {
+        if (currentBarcode == "")
+        {
             return;
         }
         currentBarcode = "";
-        
+
         Global.Product values = Global.GetProductByBarcode(barcodeID);
 
         if (values == null)

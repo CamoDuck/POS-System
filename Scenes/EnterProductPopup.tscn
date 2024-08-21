@@ -12,7 +12,7 @@
 
 [sub_resource type="ImageTexture" id="ImageTexture_orsdn"]
 
-[node name="EnterProductPopup" type="Panel" node_paths=PackedStringArray("NameLineEdit", "PriceLineEdit", "ItemTypes", "GSTBox", "PSTBox", "EnviromentalFeeBox", "BottleDepositBox", "CreateButton", "RealPriceLabel", "PriceMultipler")]
+[node name="EnterProductPopup" type="Panel" node_paths=PackedStringArray("NameLineEdit", "PriceLineEdit", "ItemTypes", "GSTBox", "PSTBox", "EnviromentalFeeBox", "BottleDepositBox", "CreateButton", "RealPriceLabel", "PriceMultipler", "Quantity")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -24,7 +24,7 @@ theme_override_styles/panel = ExtResource("1_neoy3")
 script = ExtResource("1_fypxt")
 NameLineEdit = NodePath("Panel/VBoxContainer/Name")
 PriceLineEdit = NodePath("Panel/VBoxContainer/HBoxContainer3/Price")
-ItemTypes = NodePath("Panel/VBoxContainer/HBoxContainer3/Types")
+ItemTypes = NodePath("Panel/VBoxContainer/HBoxContainer4/Types")
 GSTBox = NodePath("Panel/VBoxContainer/HBoxContainer2/GST")
 PSTBox = NodePath("Panel/VBoxContainer/HBoxContainer2/PST")
 EnviromentalFeeBox = NodePath("Panel/VBoxContainer/HBoxContainer2/EnvironmentalFee")
@@ -32,6 +32,7 @@ BottleDepositBox = NodePath("Panel/VBoxContainer/HBoxContainer2/BottleDepositFee
 CreateButton = NodePath("Panel/VBoxContainer/HBoxContainer/Create")
 RealPriceLabel = NodePath("Panel/VBoxContainer/Margin/RealPrice")
 PriceMultipler = NodePath("Panel/VBoxContainer/HBoxContainer3/PriceMultiplier")
+Quantity = NodePath("Panel/VBoxContainer/HBoxContainer3/Quantity")
 ErrorStyle = ExtResource("2_6hkfg")
 
 [node name="Panel" type="Panel" parent="."]
@@ -82,7 +83,17 @@ size_flags_vertical = 3
 placeholder_text = "Enter price"
 alignment = 1
 
-[node name="Types" type="OptionButton" parent="Panel/VBoxContainer/HBoxContainer3"]
+[node name="Quantity" type="SpinBox" parent="Panel/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+max_value = 1000.0
+rounded = true
+prefix = "Qty"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Types" type="OptionButton" parent="Panel/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
@@ -147,5 +158,7 @@ text = "Cancel
 [connection signal="text_changed" from="Panel/VBoxContainer/Name" to="." method="_OnNameLineEditChanged"]
 [connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer3/PriceMultiplier" to="." method="UpdateRealPrice"]
 [connection signal="text_changed" from="Panel/VBoxContainer/HBoxContainer3/Price" to="." method="_OnPriceLineEditChanged"]
+[connection signal="value_changed" from="Panel/VBoxContainer/HBoxContainer3/Quantity" to="." method="_OnQuantityValueChanged"]
+[connection signal="item_selected" from="Panel/VBoxContainer/HBoxContainer4/Types" to="." method="_OnItemTypesChanged"]
 [connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer/Create" to="." method="_OnCreateButtonPressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer/Cancel" to="." method="_OnCancelButtonPressed"]

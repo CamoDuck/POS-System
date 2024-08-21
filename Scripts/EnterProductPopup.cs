@@ -17,6 +17,7 @@ public partial class EnterProductPopup : Panel
     [Export] Button CreateButton;
     [Export] SpinBox RealPriceLabel;
     [Export] CheckButton PriceMultipler;
+    [Export] SpinBox Quantity;
 
     [Export] StyleBoxFlat ErrorStyle;
 
@@ -25,21 +26,22 @@ public partial class EnterProductPopup : Panel
 
     bool isCreateButtonPressed;
 
-    double wait = 2;
-    public override void _Process(double delta)
-    {
-        wait -= delta;
-        if (wait > 0 && wait < 1)
-        {
-            wait = -1;
-            Start();
-        }
-    }
+    // double wait = 2;
+    // public override void _Process(double delta)
+    // {
+    //     wait -= delta;
+    //     if (wait > 0 && wait < 1)
+    //     {
+    //         wait = -1;
+    //         Start();
+    //     }
+    // }
 
     public void Start()
     {
         NameLineEdit.Clear();
         PriceLineEdit.Clear();
+        UpdateItemTypes();
         PriceMultipler.Text = $"{Global.priceMarkup}x";
         GSTBox.ButtonPressed = false;
         PSTBox.ButtonPressed = false;
@@ -55,6 +57,20 @@ public partial class EnterProductPopup : Panel
     public void CloseIfOpen()
     {
         Hide();
+    }
+
+    void UpdateItemTypes()
+    {
+        ItemTypes.Clear();
+        ItemTypes.AddItem("Choose a catagory", 0);
+        var list = Global.GetProductTypes();
+        if (list == null) { return; }
+
+        foreach (string type in list)
+        {
+            ItemTypes.AddItem(type);
+        }
+
     }
 
     public void _OnNameLineEditChanged(string newText)
@@ -117,6 +133,16 @@ public partial class EnterProductPopup : Panel
         RealPriceLabel.Value = (double)value;
     }
 
+    public void _OnQuantityValueChanged(float value)
+    {
+        UpdateCreateButton();
+    }
+
+    public void _OnItemTypesChanged(int id)
+    {
+        UpdateCreateButton();
+    }
+
     public void _OnCreateButtonPressed()
     {
         Hide();
@@ -133,7 +159,8 @@ public partial class EnterProductPopup : Panel
 
     void UpdateCreateButton()
     {
-        CreateButton.Disabled = !(isNameValid && isPriceValid);
+        bool valid = isNameValid && isPriceValid && Quantity.Value > 0 && ItemTypes.Selected != 0;
+        CreateButton.Disabled = !valid;
     }
 
     public Global.Product GetValues()
@@ -145,12 +172,14 @@ public partial class EnterProductPopup : Panel
 
         string name = NameLineEdit.Text;
         decimal price = (decimal)RealPriceLabel.Value;
+        string type = ItemTypes.GetItemText(ItemTypes.Selected);
+        int stock = (int)Quantity.Value;
         bool gst = GSTBox.ButtonPressed;
         bool pst = PSTBox.ButtonPressed;
         bool enviromentalFee = EnviromentalFeeBox.ButtonPressed;
         bool bottleDepositFee = BottleDepositBox.ButtonPressed;
 
-        object[] values = { null, null, name, price, null, null, gst, pst, enviromentalFee, bottleDepositFee };
+        object[] values = { null, null, name, price, stock, type, gst, pst, enviromentalFee, bottleDepositFee };
         return new Global.Product(values.ToList());
     }
 
