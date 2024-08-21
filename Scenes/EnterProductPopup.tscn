@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cvd01j06ajrrl"]
+[gd_scene load_steps=9 format=3 uid="uid://cvd01j06ajrrl"]
 
 [ext_resource type="Script" path="res://Scripts/EnterProductPopup.cs" id="1_fypxt"]
 [ext_resource type="StyleBox" uid="uid://bnur8fsil514a" path="res://TransparentBackground.tres" id="1_neoy3"]
@@ -10,7 +10,9 @@
 
 [sub_resource type="Theme" id="Theme_rrwmo"]
 
-[node name="EnterProductPopup" type="Panel" node_paths=PackedStringArray("NameLineEdit", "PriceLineEdit", "ItemTypes", "GSTBox", "PSTBox", "EnviromentalFeeBox", "BottleDepositBox", "CreateButton", "RealPriceLabel")]
+[sub_resource type="ImageTexture" id="ImageTexture_orsdn"]
+
+[node name="EnterProductPopup" type="Panel" node_paths=PackedStringArray("NameLineEdit", "PriceLineEdit", "ItemTypes", "GSTBox", "PSTBox", "EnviromentalFeeBox", "BottleDepositBox", "CreateButton", "RealPriceLabel", "PriceMultipler")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -29,6 +31,7 @@ EnviromentalFeeBox = NodePath("Panel/VBoxContainer/HBoxContainer2/EnvironmentalF
 BottleDepositBox = NodePath("Panel/VBoxContainer/HBoxContainer2/BottleDepositFee")
 CreateButton = NodePath("Panel/VBoxContainer/HBoxContainer/Create")
 RealPriceLabel = NodePath("Panel/VBoxContainer/Margin/RealPrice")
+PriceMultipler = NodePath("Panel/VBoxContainer/HBoxContainer3/PriceMultiplier")
 ErrorStyle = ExtResource("2_6hkfg")
 
 [node name="Panel" type="Panel" parent="."]
@@ -67,6 +70,10 @@ alignment = 1
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
+
+[node name="PriceMultiplier" type="CheckButton" parent="Panel/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+button_pressed = true
 
 [node name="Price" type="LineEdit" parent="Panel/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
@@ -108,12 +115,18 @@ text = "BOTTLE"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RealPrice" type="Label" parent="Panel/VBoxContainer/Margin"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "Price : $"
+[node name="RealPrice" type="SpinBox" parent="Panel/VBoxContainer/Margin"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_icons/updown = SubResource("ImageTexture_orsdn")
+max_value = 10000.0
+step = 0.05
+editable = false
+prefix = "Sale Price = $"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
@@ -132,6 +145,7 @@ text = "Cancel
 "
 
 [connection signal="text_changed" from="Panel/VBoxContainer/Name" to="." method="_OnNameLineEditChanged"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer3/PriceMultiplier" to="." method="UpdateRealPrice"]
 [connection signal="text_changed" from="Panel/VBoxContainer/HBoxContainer3/Price" to="." method="_OnPriceLineEditChanged"]
 [connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer/Create" to="." method="_OnCreateButtonPressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer/Cancel" to="." method="_OnCancelButtonPressed"]

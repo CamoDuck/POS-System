@@ -15,7 +15,8 @@ public partial class EnterProductPopup : Panel
     [Export] CheckBox EnviromentalFeeBox;
     [Export] CheckBox BottleDepositBox;
     [Export] Button CreateButton;
-    [Export] Label RealPriceLabel;
+    [Export] SpinBox RealPriceLabel;
+    [Export] CheckButton PriceMultipler;
 
     [Export] StyleBoxFlat ErrorStyle;
 
@@ -24,10 +25,22 @@ public partial class EnterProductPopup : Panel
 
     bool isCreateButtonPressed;
 
+    double wait = 2;
+    public override void _Process(double delta)
+    {
+        wait -= delta;
+        if (wait > 0 && wait < 1)
+        {
+            wait = -1;
+            Start();
+        }
+    }
+
     public void Start()
     {
         NameLineEdit.Clear();
         PriceLineEdit.Clear();
+        PriceMultipler.Text = $"{Global.priceMarkup}x";
         GSTBox.ButtonPressed = false;
         PSTBox.ButtonPressed = false;
         EnviromentalFeeBox.ButtonPressed = false;
@@ -86,13 +99,22 @@ public partial class EnterProductPopup : Panel
             PriceLineEdit.AddThemeStyleboxOverride("normal", ErrorStyle);
         }
 
-        UpdateRealPrice(value);
+        UpdateRealPrice();
         UpdateCreateButton();
     }
 
-    public void UpdateRealPrice(decimal value)
+    public void UpdateRealPrice()
     {
-        RealPriceLabel.Text = $"Price : {Global.ApplyMarkupAndRound(value):C}";
+        decimal value;
+        bool isDecimal = decimal.TryParse(PriceLineEdit.Text, out value);
+        if (!isDecimal) { return; }
+
+        if (PriceMultipler.ButtonPressed)
+        {
+            value = Global.ApplyMarkupAndRound(value);
+        }
+
+        RealPriceLabel.Value = (double)value;
     }
 
     public void _OnCreateButtonPressed()
@@ -122,7 +144,7 @@ public partial class EnterProductPopup : Panel
         }
 
         string name = NameLineEdit.Text;
-        decimal price = Global.ApplyMarkupAndRound(decimal.Parse(PriceLineEdit.Text));
+        decimal price = (decimal)RealPriceLabel.Value;
         bool gst = GSTBox.ButtonPressed;
         bool pst = PSTBox.ButtonPressed;
         bool enviromentalFee = EnviromentalFeeBox.ButtonPressed;

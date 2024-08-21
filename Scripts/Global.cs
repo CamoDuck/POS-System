@@ -444,23 +444,6 @@ public static class Global
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ///////////////////////////////////////////////////////////////////////////
     // Printing 
     ///////////////////////////////////////////////////////////////////////////
@@ -498,8 +481,7 @@ public static class Global
         // public static readonly byte[]  = { };
     }
 
-    static string printer = @"\\PC\ThermalPrinter";
-    static readonly string filePath = @"C:\Users\cubeb\Downloads\Test.txt";
+    static string printer;
 
     public static T[] ConcatArray<T>(T[] x, T[] y)
     {
@@ -628,15 +610,18 @@ public static class Global
 
     static void PrintBytes(byte[] data)
     {
-        File.WriteAllBytes(filePath, data);
-        File.Copy(filePath, printer);
+        string tempFilePath = "printerFile.txt";
+        File.WriteAllBytes(tempFilePath, data);
+        File.Copy(tempFilePath, printer);
     }
 
     public static void ConnectToPrinter()
     {
+        string PCName = System.Environment.MachineName;
+
         foreach (string printerName in PrinterSettings.InstalledPrinters)
         {
-            printer = @"\\PC\" + printerName;
+            printer = @$"\\{PCName}PC\" + printerName;
             break;
         }
     }
