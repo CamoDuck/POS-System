@@ -18,6 +18,7 @@ config/icon="res://Images/icon.svg"
 [display]
 
 window/subwindows/embed_subwindows=false
+window/stretch/mode="canvas_items"
 
 [dotnet]
 

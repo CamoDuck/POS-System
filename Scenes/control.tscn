@@ -87,7 +87,7 @@ stretch = true
 
 [node name="MainSubViewport" type="SubViewport" parent="VBoxContainer/HBoxContainer/SubViewportContainer"]
 handle_input_locally = false
-size = Vector2i(2, 2)
+size = Vector2i(765, 540)
 render_target_update_mode = 4
 
 [node name="Item List" type="PanelContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport"]
