@@ -427,8 +427,12 @@ public static class Global
         Godot.Collections.Array<Node> items = GetSelected();
         foreach (Node item in items)
         {
-            item.QueueFree();
+            DeleteItem(item);
         }
+    }
+
+    static public void DeleteItem(Node item) {
+        item.QueueFree();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -628,6 +632,7 @@ public static class Global
 
     static void PrintBytes(byte[] data)
     {
+
         string tempFilePath = "printerFile.txt";
         File.WriteAllBytes(tempFilePath, data);
         File.Copy(tempFilePath, printer);
@@ -636,16 +641,18 @@ public static class Global
     public static void ConnectToPrinter()
     {
         string PCName = System.Environment.MachineName;
-
+        // GD.Print($"Count: {PrinterSettings.InstalledPrinters.Count}");
         foreach (string printerName in PrinterSettings.InstalledPrinters)
         {
-            printer = @$"\\{PCName}PC\" + printerName;
+            printer = @$"\\{PCName}\" + printerName;
+            // GD.Print(PCName);
             break;
         }
     }
 
     static public void PrintReceipt()
     {
+
         SetLineSpacing(5);
 
         PrintLine("SOZAIYA", 1, Justification.MIDDLE);

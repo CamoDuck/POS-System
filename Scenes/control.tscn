@@ -1,7 +1,7 @@
 [gd_scene load_steps=20 format=3 uid="uid://b3hvcd7tbj6rj"]
 
 [ext_resource type="Script" path="res://Scripts/ControlScript.cs" id="1_aiqpa"]
-[ext_resource type="Texture2D" uid="uid://csv5pcwb0b0ad" path="res://Images/C3F56112-ACAF-48AC-A818-0C7D375D81A9.PNG" id="1_ldkee"]
+[ext_resource type="Texture2D" uid="uid://csv5pcwb0b0ad" path="res://Images/SozaiyaLogoColor.PNG" id="1_ldkee"]
 [ext_resource type="StyleBox" uid="uid://dsc2q7c5sgsmq" path="res://backgroundColor.tres" id="2_byrxm"]
 [ext_resource type="PackedScene" uid="uid://dn21oyihmvulh" path="res://Scenes/Discount.tscn" id="3_qvbo2"]
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="3_uay47"]
@@ -270,10 +270,21 @@ text = "DELETE"
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="HBoxContainer10" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Select All" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer10"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+text = "Open Drawer
+"
+
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 7.0
+size_flags_stretch_ratio = 6.0
 
 [node name="HBoxContainer8" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
@@ -321,7 +332,7 @@ layout_mode = 1
 [node name="Window" type="Window" parent="."]
 mode = 3
 initial_position = 3
-size = Vector2i(1000, 800)
+size = Vector2i(1, 800)
 current_screen = 0
 
 [node name="Control" type="Control" parent="Window"]
@@ -360,24 +371,50 @@ size_flags_horizontal = 3
 [node name="TextureRect" type="TextureRect" parent="Window/Control/PanelContainer/HBoxContainer/PanelContainer/VBoxContainer"]
 clip_contents = true
 layout_mode = 2
+size_flags_vertical = 3
 texture = ExtResource("1_ldkee")
 expand_mode = 4
+stretch_mode = 4
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Window/Control/PanelContainer/HBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
+bbcode_enabled = true
+text = "[font_size={25}]
+[center]
+Follow us @SozaiyaCanada on our socials for special deals!
+[/center]
+
+[table={2}]
+	[cell][img=50%]res://Images/Facebook Icon.webp[/img][/cell]
+	[cell][u][bgcolor=#4a7dec]@SozaiyaCanada[/bgcolor][/u][/cell]
+
+	[cell][img=50%]res://Images/Instagram Icon.png[/img][/cell] 
+	[cell][u][bgcolor=#54287b]@SozaiyaCanada[/bgcolor][/u][/cell]
+
+	[cell][img=50%]res://Images/Tiktok Icon.webp[/img][/cell] 
+	[cell][u][bgcolor=#180c24]@SozaiyaCanada[/bgcolor][/u][/cell]
+[/table]
+[/font_size]
+"
 fit_content = true
 
 [node name="ViewportTexture" type="TextureRect" parent="Window/Control/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 8
+size_flags_stretch_ratio = 3.0
 texture = SubResource("ViewportTexture_rm8yc")
+expand_mode = 5
 stretch_mode = 4
 
 [connection signal="child_order_changed" from="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items" to="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer" method="OnListChange"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/AddItemByName" to="." method="_OnAddItemByNameButtonPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/50PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [50]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer4/RemoveDiscount" to="." method="_OnDiscountButtonPressed" binds= [0]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Select All" to="." method="_SelectAllButtonPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/DeSelect All" to="." method="_DeSelectAllButtonPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Delete" to="." method="_DeleteButtonPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer10/Select All" to="." method="_OnOpenDrawerPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer8/Pay Cash" to="CashPaymentPopup" method="_OnStartButtonClick"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer8/Pay Card" to="." method="_OnPayCardPressed"]

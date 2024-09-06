@@ -44,21 +44,10 @@ public partial class ControlScript : Control
     {
         Global.ConnectDb();
         Global.CreateTables();
+        Global.ConnectToPrinter();
         Global.ConnectScanner(_OnBarcode);
 
     }
-
-    // double dt = 0;
-
-    // public override void _Process(double delta)
-    // {
-    //     if (dt > 2 && dt < 3)
-    //     {
-    //         dt = 4;
-    //         enterProductPopup.Start();
-    //     }
-    //     dt += delta;
-    // }
 
     public override void _ExitTree()
     {
@@ -159,7 +148,17 @@ public partial class ControlScript : Control
 
     public void _DeleteButtonPressed()
     {
-        Global.DeleteSelectedItems();
+        var Nodes = Global.GetSelected();
+        if (Nodes.Count == 0)
+        {
+            Item lastItem = Global.GetItem(-1);
+            if (lastItem == null){return;}
+            Global.DeleteItem(lastItem);
+        }
+        else {
+            Global.DeleteSelectedItems();
+        }
+        
     }
 
     public void _DeSelectAllButtonPressed()
@@ -172,6 +171,11 @@ public partial class ControlScript : Control
         GD.Print("ran");
         Global.SelectAllItems();
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    public void _OnOpenDrawerPressed() {
+        Global.OpenCashDrawer();
+    }  
 
     ///////////////////////////////////////////////////////////////////////////
 

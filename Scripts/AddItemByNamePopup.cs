@@ -12,6 +12,8 @@ public partial class AddItemByNamePopup : Control
 
     public void Open()
     {
+        itemList.GetVScrollBar().Scale = new Vector2(10,1);
+        itemList.GetVScrollBar().PivotOffset = itemList.GetVScrollBar().Size/2;
         searchbar.Clear();
         UpdateTypeButton();
         UpdateItemList();
@@ -63,7 +65,7 @@ public partial class AddItemByNamePopup : Control
             string barcode = p.barcode;
             decimal price = p.price;
 
-            itemList.AddItem($"({barcode}) {name} - ${price:C}");
+            itemList.AddItem($"{name} - {price:C}");
         }
     }
 
