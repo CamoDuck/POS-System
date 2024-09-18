@@ -154,6 +154,7 @@ public static class Global
     public static SqliteConnection dbConnection = new SqliteConnection($"Data Source={globalDbPath}");
     static bool dbExists = File.Exists(Global.globalDbPath);
 
+    static long lastOrderID = -1;
     public static void ConnectDb()
     {
         dbConnection.Open();
@@ -354,6 +355,7 @@ public static class Global
             ";
         SqliteCommand command = new SqliteCommand(sql, dbConnection);
         long id = (long)command.ExecuteScalar();
+        lastOrderID = id;
 
         CS.Print(id);
 
@@ -433,6 +435,11 @@ public static class Global
 
     static public void DeleteItem(Node item) {
         item.QueueFree();
+    }
+
+    static public void DeleteAllItems() {
+        SelectAllItems();
+        DeleteSelectedItems();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -683,8 +690,8 @@ public static class Global
         PrintLine("Thank you for shopping with us");
         PrintEmptyLine();
 
-        string barcodeNum = "012345678901";
-        PrintLine($"Order #{barcodeNum}", justification: Justification.MIDDLE);
+        string barcodeNum = $"ORD" + $"{lastOrderID}".PadLeft(12-3,'0');
+        PrintLine($"{barcodeNum}", justification: Justification.MIDDLE);
         PrintBarcode(barcodeNum, 280, 0x41, 2, 80, 0, 0);
 
         PrintEmptyLine(2);

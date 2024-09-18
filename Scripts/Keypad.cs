@@ -24,6 +24,10 @@ public partial class Keypad : Control
     [Export] SpinBox box;
     string currentText = "";
 
+    public void Clear() {
+        currentText = "";
+    }
+
     public void _OnKeyPressed(int value)
     {
         Key keyType = (Key)value;

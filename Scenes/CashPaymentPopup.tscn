@@ -9,12 +9,12 @@
 [sub_resource type="Theme" id="Theme_65wde"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ku4bb"]
-font_size = 15
+font_size = 25
 font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="Theme" id="Theme_sd5s6"]
 
-[node name="CashPaymentPopup" type="Control" node_paths=PackedStringArray("totalLabel", "cashGiven", "cashReturn")]
+[node name="CashPaymentPopup" type="Control" node_paths=PackedStringArray("cashGiven", "cashReturn", "keypad")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,15 +22,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_wlns6")
-totalLabel = NodePath("Panel/Panel/VBoxContainer/Total")
 cashGiven = NodePath("Panel/Panel/VBoxContainer/CashGiven")
 cashReturn = NodePath("Panel/Panel/VBoxContainer/CashReturn")
+keypad = NodePath("Panel/Panel/VBoxContainer/Keypad")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = ExtResource("1_3vtt2")
@@ -57,20 +59,17 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 3
 theme = SubResource("Theme_65wde")
-text = "Add product
-"
+text = "Pay by Cash"
 label_settings = ExtResource("3_0yr82")
 horizontal_alignment = 1
 
-[node name="Total" type="Label" parent="Panel/Panel/VBoxContainer"]
+[node name="CashReturn" type="Label" parent="Panel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = SubResource("Theme_65wde")
-text = "Total
-"
+text = "Return Cash"
 label_settings = SubResource("LabelSettings_ku4bb")
 horizontal_alignment = 1
-vertical_alignment = 2
 
 [node name="CashGiven" type="SpinBox" parent="Panel/Panel/VBoxContainer"]
 layout_mode = 2
@@ -89,14 +88,6 @@ select_all_on_focus = true
 layout_mode = 2
 box = NodePath("../CashGiven")
 
-[node name="CashReturn" type="Label" parent="Panel/Panel/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme = SubResource("Theme_65wde")
-text = "Return Cash"
-label_settings = SubResource("LabelSettings_ku4bb")
-horizontal_alignment = 1
-
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -107,12 +98,11 @@ size_flags_horizontal = 3
 text = "Confirm
 "
 
-[node name="Close" type="Button" parent="Panel/Panel/VBoxContainer/HBoxContainer"]
+[node name="Cancel" type="Button" parent="Panel/Panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Close
-"
+text = "Cancel"
 
 [connection signal="value_changed" from="Panel/Panel/VBoxContainer/CashGiven" to="." method="_OnValueChanged"]
 [connection signal="pressed" from="Panel/Panel/VBoxContainer/HBoxContainer/Confirm" to="." method="_OnConfirmPressed"]
-[connection signal="pressed" from="Panel/Panel/VBoxContainer/HBoxContainer/Close" to="." method="_OnClosePressed"]
+[connection signal="pressed" from="Panel/Panel/VBoxContainer/HBoxContainer/Cancel" to="." method="_OnClosePressed"]

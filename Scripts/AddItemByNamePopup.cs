@@ -8,10 +8,15 @@ public partial class AddItemByNamePopup : Control
     [Export] ItemList itemList;
     [Export] OptionButton typeButton;
 
+    [Export] Texture2D checkMark;
+
     List<Global.Product> products;
+    List<Global.Product> selectedProducts = new List<Global.Product>();
 
     public void Open()
     {
+        typeButton.AddThemeFontSizeOverride("40px", 40);
+        selectedProducts.Clear();
         itemList.GetVScrollBar().Scale = new Vector2(10,1);
         itemList.GetVScrollBar().PivotOffset = itemList.GetVScrollBar().Size/2;
         searchbar.Clear();
@@ -40,10 +45,24 @@ public partial class AddItemByNamePopup : Control
         UpdateItemList();
     }
 
-    public void _OnItemSelected(int index)
+    public void _OnItemSelect(int index)
     {
-        Global.Product values = products[index];
-        Item.NewItem(values);
+        Global.Product p = products[index];
+
+        if (selectedProducts.Contains(p)) {
+            selectedProducts.Remove(p);
+            itemList.SetItemIcon(index, null);
+        }
+        else {
+            selectedProducts.Add(p);
+            itemList.SetItemIcon(index, checkMark);
+        }
+    }
+
+    public void _OnAddClicked() {
+        foreach (Global.Product p in selectedProducts) {
+            Item.NewItem(p);
+        }
         Close();
     }
 

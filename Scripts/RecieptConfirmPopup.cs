@@ -18,11 +18,13 @@ public partial class RecieptConfirmPopup : Control
     {
         Close();
         Global.PrintReceipt();
+        Global.DeleteAllItems();
     }
 
     void _OnNoPressed()
     {
         Close();
+        Global.DeleteAllItems();
     }
 
 }

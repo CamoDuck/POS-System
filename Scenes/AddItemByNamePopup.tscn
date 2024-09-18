@@ -1,13 +1,18 @@
-[gd_scene load_steps=7 format=3 uid="uid://bbrrojoxwp5y0"]
+[gd_scene load_steps=9 format=3 uid="uid://bbrrojoxwp5y0"]
 
 [ext_resource type="Script" path="res://Scripts/AddItemByNamePopup.cs" id="1_23lie"]
 [ext_resource type="StyleBox" uid="uid://bnur8fsil514a" path="res://TransparentBackground.tres" id="1_82hfd"]
 [ext_resource type="StyleBox" uid="uid://xqjy03ibbblb" path="res://PanelOpaque.tres" id="2_5tcyo"]
+[ext_resource type="Texture2D" uid="uid://bxwt8n3vbirqq" path="res://Images/checkMark.webp" id="2_oo60p"]
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="3_6kjir"]
 
 [sub_resource type="Theme" id="Theme_xv61l"]
 
-[sub_resource type="Theme" id="Theme_ru60b"]
+[sub_resource type="Theme" id="Theme_4k0mi"]
+PopupMenu/font_sizes/font_size = 40
+
+[sub_resource type="LabelSettings" id="LabelSettings_qqd5w"]
+font_size = 40
 
 [node name="AddItemByNamePopup" type="Control" node_paths=PackedStringArray("searchbar", "itemList", "typeButton")]
 layout_mode = 3
@@ -22,6 +27,7 @@ script = ExtResource("1_23lie")
 searchbar = NodePath("Panel/Panel/VBoxContainer/HBoxContainer2/Search")
 itemList = NodePath("Panel/Panel/VBoxContainer/ItemList")
 typeButton = NodePath("Panel/Panel/VBoxContainer/HBoxContainer2/Type")
+checkMark = ExtResource("2_oo60p")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
@@ -44,17 +50,17 @@ theme_override_styles/panel = ExtResource("2_5tcyo")
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/Panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.2
-anchor_top = 0.2
-anchor_right = 0.8
-anchor_bottom = 0.8
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
 size_flags_horizontal = 3
 
 [node name="Title" type="Label" parent="Panel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = SubResource("Theme_xv61l")
-text = "Add product
+text = "Add Items by Name
 "
 label_settings = ExtResource("3_6kjir")
 horizontal_alignment = 1
@@ -67,30 +73,59 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
-theme = SubResource("Theme_ru60b")
 placeholder_text = "Enter product name"
 alignment = 1
 
 [node name="Type" type="OptionButton" parent="Panel/Panel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = SubResource("Theme_4k0mi")
 
 [node name="ItemList" type="ItemList" parent="Panel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 10.0
+allow_reselect = true
+fixed_icon_size = Vector2i(25, 25)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="Add" type="Button" parent="Panel/Panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Panel/Panel/VBoxContainer/HBoxContainer/Add"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Add"
+label_settings = SubResource("LabelSettings_qqd5w")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Close" type="Button" parent="Panel/Panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Close
-"
+
+[node name="Label" type="Label" parent="Panel/Panel/VBoxContainer/HBoxContainer/Close"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Close"
+label_settings = SubResource("LabelSettings_qqd5w")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="text_changed" from="Panel/Panel/VBoxContainer/HBoxContainer2/Search" to="." method="_OnSearchTextChanged"]
 [connection signal="item_selected" from="Panel/Panel/VBoxContainer/HBoxContainer2/Type" to="." method="_OnTypeChanged"]
-[connection signal="item_activated" from="Panel/Panel/VBoxContainer/ItemList" to="." method="_OnItemSelected"]
+[connection signal="item_selected" from="Panel/Panel/VBoxContainer/ItemList" to="." method="_OnItemSelect"]
+[connection signal="pressed" from="Panel/Panel/VBoxContainer/HBoxContainer/Add" to="." method="_OnAddClicked"]
 [connection signal="pressed" from="Panel/Panel/VBoxContainer/HBoxContainer/Close" to="." method="_OnCloseButtonPressed"]
