@@ -9,15 +9,14 @@ public partial class CashPaymentPopup : Control
     [Export] Keypad keypad;
 
     decimal total;
-    bool cashDrawerOpened;
 
     public void _OnStartButtonClick()
     {
-        cashDrawerOpened = false;
         cashGiven.Value = 0;
         keypad.Clear();
-        this.total = Global.total;
+        this.total = Global.Round(Global.total);
         cashReturn.Text = $"Change: {0:C}";
+        Global.OpenCashDrawer();
         Show();
     }
 
@@ -25,11 +24,6 @@ public partial class CashPaymentPopup : Control
     {
         decimal change = Math.Max(Convert.ToDecimal(newValue) - total, 0);
         cashReturn.Text = $"Change: {change:C}";
-        if (cashDrawerOpened) {
-            Global.OpenCashDrawer();
-            cashDrawerOpened = true;
-        }
-
     }
 
     public void _OnConfirmPressed()

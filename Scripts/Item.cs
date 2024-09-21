@@ -230,12 +230,12 @@ public partial class Item : Control
 
     public string[] ToText()
     {
-        string itemText = $"{GetName()}";
-        string quantityText = $"     {GetQuantity()} @ {GetSingleOriginalPrice():C}".PadRight(39, ' ') + $"{GetNoDiscountPrice():C}".PadRight(9, ' ');
-        string discountText = isDiscounted() ? $"     DISCOUNT {GetDiscount() * 100}%".PadRight(38, ' ') + $"-{GetNoDiscountPrice() - GetSubTotalPrice():C}".PadRight(10, ' ') : null;
-
-        string[] ret = { itemText, quantityText, discountText };
-        return ret;
+        return Global.CreateItemString(name:GetName(), 
+        quantity:GetQuantity(),
+        singleOriginalPrice:GetSingleOriginalPrice(),
+        noDiscountPrice:GetNoDiscountPrice(),
+        subTotalPrice:GetSubTotalPrice(),
+        discount:GetDiscount());
     }
 
 }

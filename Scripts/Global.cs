@@ -15,6 +15,9 @@ using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using Godot.Collections;
+using System.Collections;
+using System.Threading.Tasks;
 
 public static class Global
 {
@@ -66,10 +69,13 @@ public static class Global
     static readonly decimal ENVIRONMENTAL_FEE = 0.05m;
     static readonly decimal BOTTLE_DEPOSIT_FEE = 0.10m;
 
+    public static decimal Round(decimal value) {
+        return Math.Round(value * 20) / 20;
+    }
     public static decimal ApplyMarkupAndRound(decimal value)
     {
         decimal markupPrice = value * priceMarkup;
-        decimal roundedPrice = Math.Round(markupPrice * 20) / 20;
+        decimal roundedPrice = Round(markupPrice);
         return roundedPrice;
     }
 
@@ -117,16 +123,31 @@ public static class Global
     static System.IO.Ports.SerialPort port = null;
     static List<Action<string>> callbacks = new List<Action<string>>();
 
-    public static void ConnectScanner(Action<string> callback)
+    public static async void ConnectScanner(Action<string> callback)
     {
         if (port == null)
         {
             port = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
             port.DataReceived += new SerialDataReceivedEventHandler(_OnPortDataReceived);
-            // Begin communications 
-            port.Open();
         }
-        callbacks.Add(callback);
+        if (port.IsOpen) {
+            callbacks.Add(callback);
+        }
+        else {
+            bool succeed = false;
+            while (!succeed) {
+                try {
+                    port.Open();
+                    succeed = true;
+                    GD.Print("Scanner Connected!");
+                }
+                catch (Exception e) {
+                    GD.PrintErr("Failed to connect to printer. Retrying in 5 seconds");
+                    await Task.Delay(5000);
+                }
+            }
+        }
+
     }
 
     public static void DisconnectScannerAll()
@@ -639,10 +660,14 @@ public static class Global
 
     static void PrintBytes(byte[] data)
     {
-
-        string tempFilePath = "printerFile.txt";
-        File.WriteAllBytes(tempFilePath, data);
-        File.Copy(tempFilePath, printer);
+        try {
+            string tempFilePath = "printerFile.txt";
+            File.WriteAllBytes(tempFilePath, data);
+            File.Copy(tempFilePath, printer);
+        }
+        catch (Exception e){
+            GD.PrintErr(e);
+        }
     }
 
     public static void ConnectToPrinter()
@@ -657,22 +682,77 @@ public static class Global
         }
     }
 
-    static public void PrintReceipt()
-    {
+    static public string[] CreateItemString(string name, int quantity, decimal singleOriginalPrice, decimal noDiscountPrice, decimal subTotalPrice, decimal discount) {
+        bool isDiscounted = discount > 0;
+        string itemText = $"{name}";
+        string quantityText = $"     {quantity} @ {singleOriginalPrice:C}".PadRight(39, ' ') + $"{noDiscountPrice:C}".PadRight(9, ' ');
+        string discountText = isDiscounted ? $"     DISCOUNT {discount * 100}%".PadRight(38, ' ') + $"-{noDiscountPrice - subTotalPrice:C}".PadRight(10, ' ') : null;
 
+        string[] ret = { itemText, quantityText, discountText };
+        return ret;
+    }
+
+    static public void PrintReceiptFromData(int purchaseId) {
+        const int columnCount = 9;
+        string sql =
+        @$"DROP TABLE IF EXISTS CPITemp;
+            DROP TABLE IF EXISTS ProductTemp;
+
+            CREATE TABLE CPITemp AS
+            SELECT ItemId AS Id, Discount, Price, Quantity
+            FROM CustomerPurchaseItem
+            WHERE PurchaseId = {purchaseId};
+
+            CREATE TABLE ProductTemp AS
+            SELECT Id, Name, GST, PST, EnviromentalFee, BottleDepositFee
+            FROM Products;
+
+            SELECT * 
+            FROM CPITemp NATURAL JOIN ProductTemp;";
+
+        List<List<object>> rows = QueryAndRead(sql, columnCount);
+        Array<string[]> items = new Array<string[]>();
+        if (rows != null && rows.Count > 0)
+        {
+            decimal discount = Convert.ToDecimal(rows[1]);
+            decimal price = Convert.ToDecimal(rows[2]);
+            int quantity = Convert.ToInt32(rows[3]);
+            string name = Convert.ToString(rows[4]);
+            bool hasGST = Convert.ToBoolean(rows[5]);
+            bool hasPST = Convert.ToBoolean(rows[6]);
+            bool hasEnviroFee = Convert.ToBoolean(rows[7]);
+            bool hasbottleDeposit = Convert.ToBoolean(rows[8]);
+            items.Add(CreateItemString(name:name,
+            quantity:quantity,
+            singleOriginalPrice: price,
+            noDiscountPrice: price * quantity,
+            subTotalPrice: CalculateTotal(quantity,price,hasGST,hasPST,hasEnviroFee,hasbottleDeposit),
+            discount:discount));
+        }
+
+        PrintReceipt(true, items);
+    }
+
+    static public void PrintReceipt(bool fromData=false, Array<string[]> ItemData=null)
+    {
         SetLineSpacing(5);
 
         PrintLine("SOZAIYA", 1, Justification.MIDDLE);
         PrintLine("2906 EAST 2ND AVE", 0, Justification.MIDDLE);
         PrintLine("VANCOUVER, BC V5M 1E6", 0, Justification.MIDDLE);
-        PrintLine("INSTAGRAM.COM/SOZAIYA", 0, Justification.MIDDLE);
+        PrintLine("INSTAGRAM.COM/SozaiyaCanada", 0, Justification.MIDDLE);
         PrintLine("Authentic Japanese Goods", 0, Justification.MIDDLE);
         PrintEmptyLine(2);
 
+        if (!fromData) {
+            foreach (Item item in GetAllItems()) {
+                ItemData.Add(item.ToText());
+            }
+        }
+
         // Print items
-        foreach (Item item in GetAllItems())
+        foreach (string[] texts in ItemData)
         {
-            string[] texts = item.ToText();
             foreach (string text in texts)
             {
                 if (text == null) { continue; }

@@ -45,8 +45,6 @@ public partial class ItemScrollContainer : ScrollContainer
         itemList.MoveChild(newNode, index);
     }
 
-
-
     void OnListChange()
     {
         UpdateLabels();
