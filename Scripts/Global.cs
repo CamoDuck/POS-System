@@ -64,10 +64,10 @@ public static class Global
     // Money 
     ///////////////////////////////////////////////////////////////////////////
 
-    static readonly decimal GST_PRECENT = 0.05m;
-    static readonly decimal PST_PRECENT = 0.07m;
-    static readonly decimal ENVIRONMENTAL_FEE = 0.05m;
-    static readonly decimal BOTTLE_DEPOSIT_FEE = 0.10m;
+    public static readonly decimal GST_PRECENT = 0.05m;
+    public static readonly decimal PST_PRECENT = 0.07m;
+    public static readonly decimal ENVIRONMENTAL_FEE = 0.05m;
+    public static readonly decimal BOTTLE_DEPOSIT_FEE = 0.10m;
 
     public static decimal Round(decimal value) {
         return Math.Round(value * 20) / 20;
@@ -125,15 +125,12 @@ public static class Global
 
     public static async void ConnectScanner(Action<string> callback)
     {
+        callbacks.Add(callback);
         if (port == null)
         {
             port = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
             port.DataReceived += new SerialDataReceivedEventHandler(_OnPortDataReceived);
-        }
-        if (port.IsOpen) {
-            callbacks.Add(callback);
-        }
-        else {
+            
             bool succeed = false;
             while (!succeed) {
                 try {
@@ -301,7 +298,9 @@ public static class Global
         List<List<object>> rows = QueryAndRead(sql, Global.PRODUCT_COLUMN_COUNT, 1);
         if (rows != null && rows.Count > 0)
         {
-            return new Product(rows[0]);
+            Product p = new Product(rows[0]);
+            p.gst = false;
+            return p;
         }
         return null;
     }
@@ -320,6 +319,9 @@ public static class Global
         if (rows != null && rows.Count > 0)
         {
             List<Product> products = rows.Select(row => new Product(row)).ToList();
+            foreach(Product p in products) {
+                p.gst = false;
+            }
             return products;
         }
         return null;
@@ -730,10 +732,10 @@ public static class Global
             discount:discount));
         }
 
-        PrintReceipt(true, items);
+        PrintReceipt(items);
     }
 
-    static public void PrintReceipt(bool fromData=false, Array<string[]> ItemData=null)
+    static public void PrintReceipt(Array<string[]> ItemData=null)
     {
         SetLineSpacing(5);
 
@@ -744,7 +746,8 @@ public static class Global
         PrintLine("Authentic Japanese Goods", 0, Justification.MIDDLE);
         PrintEmptyLine(2);
 
-        if (!fromData) {
+        if (ItemData == null) {
+            ItemData = new Array<string[]>();
             foreach (Item item in GetAllItems()) {
                 ItemData.Add(item.ToText());
             }

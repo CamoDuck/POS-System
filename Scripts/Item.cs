@@ -168,6 +168,7 @@ public partial class Item : Control
         bottleDepositFeeEnabled = value;
     }
 
+
     public int GetId()
     {
         return values.id;
@@ -211,6 +212,18 @@ public partial class Item : Control
     public decimal GetPST()
     {
         return Global.CalculatePST(quantity, originalPrice, discountPercent, pstEnabled);
+    }
+
+    public decimal GetEnvironmentFee() {
+        return environmentalFeeEnabled? Global.ENVIRONMENTAL_FEE: 0;
+    }
+
+    public decimal GetDepositFee() {
+        return bottleDepositFeeEnabled? Global.BOTTLE_DEPOSIT_FEE: 0;
+    }
+
+    public decimal GetFees() {
+        return GetDepositFee() + GetEnvironmentFee();
     }
 
     public string GetName()

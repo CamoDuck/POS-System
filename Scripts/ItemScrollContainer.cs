@@ -13,6 +13,8 @@ public partial class ItemScrollContainer : ScrollContainer
     [Export] Label totalGSTLabel;
     [Export] Label totalPSTLabel;
 
+    [Export] Label totalFeeLabel;
+
     Control itemList;
 
 
@@ -65,6 +67,7 @@ public partial class ItemScrollContainer : ScrollContainer
         decimal subtotal = 0;
         decimal totalGST = 0;
         decimal totalPST = 0;
+        decimal totalFees = 0;
 
         var itemLabels = GetTree().GetNodesInGroup("Items"); ;
         foreach (Item item in itemLabels)
@@ -73,12 +76,14 @@ public partial class ItemScrollContainer : ScrollContainer
             subtotal += item.GetSubTotalPrice();
             totalGST += item.GetGST();
             totalPST += item.GetPST();
+            totalFees += item.GetFees();
         }
 
         totalLabel.Text = $"Total : {String.Format("{0:C}", total)}";
         subTotalLabel.Text = $"SubTotal : {String.Format("{0:C}", subtotal)}";
         totalGSTLabel.Text = $"Total GST : {String.Format("{0:C}", totalGST)}";
         totalPSTLabel.Text = $"Total PST : {String.Format("{0:C}", totalPST)}";
+        totalFeeLabel.Text = $"Deposit & Env : {String.Format("{0:C}", totalFees)}";
 
         Global.subtotal = subtotal;
         Global.total = total;
