@@ -299,7 +299,6 @@ public static class Global
         if (rows != null && rows.Count > 0)
         {
             Product p = new Product(rows[0]);
-            p.gst = false;
             return p;
         }
         return null;
@@ -319,9 +318,6 @@ public static class Global
         if (rows != null && rows.Count > 0)
         {
             List<Product> products = rows.Select(row => new Product(row)).ToList();
-            foreach(Product p in products) {
-                p.gst = false;
-            }
             return products;
         }
         return null;

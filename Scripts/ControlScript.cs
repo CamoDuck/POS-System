@@ -1,6 +1,8 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -139,9 +141,31 @@ public partial class ControlScript : Control
 
     [Export] AddItemByNamePopup addItemByNamePopup;
 
-    public void _OnAddItemByNameButtonPressed()
+    public void _OnAddItemByNameButtonPressed(int action=0)
     {
-        addItemByNamePopup.Open();
+        async void callback(List<Global.Product> selectedProducts) {
+            if (action == 0) {// Add items
+                foreach (Global.Product p in selectedProducts) {
+                    Item.NewItem(p);
+                }
+            }
+            else if (action == 1) { // edit items
+                enterProductPopup.Start();
+                await ToSignal(enterProductPopup, EnterProductPopup.SignalName.ClosedPopup);
+                Global.Product values = enterProductPopup.GetValues();
+
+                if (values == null)
+                {
+                    GD.Print("Canceled Item Edit");
+                    return;
+                }
+
+                
+            }
+        }
+
+        addItemByNamePopup.Open(callback);
+        
     }
 
     ///////////////////////////////////////////////////////////////////////////

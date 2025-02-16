@@ -12,9 +12,11 @@ public partial class AddItemByNamePopup : Control
 
     List<Global.Product> products;
     List<Global.Product> selectedProducts = new List<Global.Product>();
+    Action<List<Global.Product>> callback;
 
-    public void Open()
+    public void Open(Action<List<Global.Product>> callback)
     {
+        this.callback = callback;
         typeButton.AddThemeFontSizeOverride("40px", 40);
         selectedProducts.Clear();
         itemList.GetVScrollBar().Scale = new Vector2(10,1);
@@ -60,9 +62,7 @@ public partial class AddItemByNamePopup : Control
     }
 
     public void _OnAddClicked() {
-        foreach (Global.Product p in selectedProducts) {
-            Item.NewItem(p);
-        }
+        callback(selectedProducts);
         Close();
     }
 

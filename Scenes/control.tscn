@@ -201,6 +201,19 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "Add Item By Name"
 
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Edit Item" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+theme_override_styles/focus = ExtResource("8_afa7q")
+theme_override_styles/disabled_mirrored = ExtResource("8_afa7q")
+theme_override_styles/hover = ExtResource("8_afa7q")
+theme_override_styles/normal = ExtResource("8_afa7q")
+text = " EDIT ITEM "
+
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -414,7 +427,8 @@ expand_mode = 5
 stretch_mode = 4
 
 [connection signal="child_order_changed" from="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer/Items" to="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer" method="OnListChange"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/AddItemByName" to="." method="_OnAddItemByNameButtonPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/AddItemByName" to="." method="_OnAddItemByNameButtonPressed" binds= [0]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/Edit Item" to="." method="_OnAddItemByNameButtonPressed" binds= [1]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/50PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [50]]
