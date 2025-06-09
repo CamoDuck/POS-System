@@ -19,8 +19,8 @@ public partial class AddItemByNamePopup : Control
         this.callback = callback;
         typeButton.AddThemeFontSizeOverride("40px", 40);
         selectedProducts.Clear();
-        itemList.GetVScrollBar().Scale = new Vector2(10,1);
-        itemList.GetVScrollBar().PivotOffset = itemList.GetVScrollBar().Size/2;
+        itemList.GetVScrollBar().Scale = new Vector2(10, 1);
+        itemList.GetVScrollBar().PivotOffset = itemList.GetVScrollBar().Size / 2;
         searchbar.Clear();
         UpdateTypeButton();
         UpdateItemList();
@@ -51,17 +51,20 @@ public partial class AddItemByNamePopup : Control
     {
         Global.Product p = products[index];
 
-        if (selectedProducts.Contains(p)) {
+        if (selectedProducts.Contains(p))
+        {
             selectedProducts.Remove(p);
             itemList.SetItemIcon(index, null);
         }
-        else {
+        else
+        {
             selectedProducts.Add(p);
             itemList.SetItemIcon(index, checkMark);
         }
     }
 
-    public void _OnAddClicked() {
+    public void _OnAddClicked()
+    {
         callback(selectedProducts);
         Close();
     }

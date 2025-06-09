@@ -141,15 +141,19 @@ public partial class ControlScript : Control
 
     [Export] AddItemByNamePopup addItemByNamePopup;
 
-    public void _OnAddItemByNameButtonPressed(int action=0)
+    public void _OnAddItemByNameButtonPressed(int action = 0)
     {
-        async void callback(List<Global.Product> selectedProducts) {
-            if (action == 0) {// Add items
-                foreach (Global.Product p in selectedProducts) {
+        async void callback(List<Global.Product> selectedProducts)
+        {
+            if (action == 0)
+            {// Add items
+                foreach (Global.Product p in selectedProducts)
+                {
                     Item.NewItem(p);
                 }
             }
-            else if (action == 1) { // edit items
+            else if (action == 1)
+            { // edit items
                 enterProductPopup.Start();
                 await ToSignal(enterProductPopup, EnterProductPopup.SignalName.ClosedPopup);
                 Global.Product values = enterProductPopup.GetValues();
@@ -160,12 +164,12 @@ public partial class ControlScript : Control
                     return;
                 }
 
-                
+
             }
         }
 
         addItemByNamePopup.Open(callback);
-        
+
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -176,13 +180,14 @@ public partial class ControlScript : Control
         if (Nodes.Count == 0)
         {
             Item lastItem = Global.GetItem(-1);
-            if (lastItem == null){return;}
+            if (lastItem == null) { return; }
             Global.DeleteItem(lastItem);
         }
-        else {
+        else
+        {
             Global.DeleteSelectedItems();
         }
-        
+
     }
 
     public void _DeSelectAllButtonPressed()
@@ -197,9 +202,10 @@ public partial class ControlScript : Control
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    public void _OnOpenDrawerPressed() {
+    public void _OnOpenDrawerPressed()
+    {
         Global.OpenCashDrawer();
-    }  
+    }
 
     ///////////////////////////////////////////////////////////////////////////
 

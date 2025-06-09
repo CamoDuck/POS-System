@@ -24,7 +24,8 @@ public partial class Keypad : Control
     [Export] SpinBox box;
     string currentText = "";
 
-    public void Clear() {
+    public void Clear()
+    {
         currentText = "";
     }
 

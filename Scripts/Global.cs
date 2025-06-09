@@ -69,7 +69,8 @@ public static class Global
     public static readonly decimal ENVIRONMENTAL_FEE = 0.05m;
     public static readonly decimal BOTTLE_DEPOSIT_FEE = 0.10m;
 
-    public static decimal Round(decimal value) {
+    public static decimal Round(decimal value)
+    {
         return Math.Round(value * 20) / 20;
     }
     public static decimal ApplyMarkupAndRound(decimal value)
@@ -130,15 +131,18 @@ public static class Global
         {
             port = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
             port.DataReceived += new SerialDataReceivedEventHandler(_OnPortDataReceived);
-            
+
             bool succeed = false;
-            while (!succeed) {
-                try {
+            while (!succeed)
+            {
+                try
+                {
                     port.Open();
                     succeed = true;
                     GD.Print("Scanner Connected!");
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
                     GD.PrintErr("Failed to connect to printer. Retrying in 5 seconds");
                     await Task.Delay(5000);
                 }
@@ -161,7 +165,6 @@ public static class Global
             callback(barcode);
         }
     }
-
 
     ///////////////////////////////////////////////////////////////////////////
     // SQL 
@@ -452,11 +455,13 @@ public static class Global
         }
     }
 
-    static public void DeleteItem(Node item) {
+    static public void DeleteItem(Node item)
+    {
         item.QueueFree();
     }
 
-    static public void DeleteAllItems() {
+    static public void DeleteAllItems()
+    {
         SelectAllItems();
         DeleteSelectedItems();
     }
@@ -658,12 +663,14 @@ public static class Global
 
     static void PrintBytes(byte[] data)
     {
-        try {
+        try
+        {
             string tempFilePath = "printerFile.txt";
             File.WriteAllBytes(tempFilePath, data);
             File.Copy(tempFilePath, printer);
         }
-        catch (Exception e){
+        catch (Exception e)
+        {
             GD.PrintErr(e);
         }
     }
@@ -680,7 +687,8 @@ public static class Global
         }
     }
 
-    static public string[] CreateItemString(string name, int quantity, decimal singleOriginalPrice, decimal noDiscountPrice, decimal subTotalPrice, decimal discount) {
+    static public string[] CreateItemString(string name, int quantity, decimal singleOriginalPrice, decimal noDiscountPrice, decimal subTotalPrice, decimal discount)
+    {
         bool isDiscounted = discount > 0;
         string itemText = $"{name}";
         string quantityText = $"     {quantity} @ {singleOriginalPrice:C}".PadRight(39, ' ') + $"{noDiscountPrice:C}".PadRight(9, ' ');
@@ -690,7 +698,8 @@ public static class Global
         return ret;
     }
 
-    static public void PrintReceiptFromData(int purchaseId) {
+    static public void PrintReceiptFromData(int purchaseId)
+    {
         const int columnCount = 9;
         string sql =
         @$"DROP TABLE IF EXISTS CPITemp;
@@ -720,18 +729,18 @@ public static class Global
             bool hasPST = Convert.ToBoolean(rows[6]);
             bool hasEnviroFee = Convert.ToBoolean(rows[7]);
             bool hasbottleDeposit = Convert.ToBoolean(rows[8]);
-            items.Add(CreateItemString(name:name,
-            quantity:quantity,
+            items.Add(CreateItemString(name: name,
+            quantity: quantity,
             singleOriginalPrice: price,
             noDiscountPrice: price * quantity,
-            subTotalPrice: CalculateTotal(quantity,price,hasGST,hasPST,hasEnviroFee,hasbottleDeposit),
-            discount:discount));
+            subTotalPrice: CalculateTotal(quantity, price, hasGST, hasPST, hasEnviroFee, hasbottleDeposit),
+            discount: discount));
         }
 
         PrintReceipt(items);
     }
 
-    static public void PrintReceipt(Array<string[]> ItemData=null)
+    static public void PrintReceipt(Array<string[]> ItemData = null)
     {
         SetLineSpacing(5);
 
@@ -742,9 +751,11 @@ public static class Global
         PrintLine("Authentic Japanese Goods", 0, Justification.MIDDLE);
         PrintEmptyLine(2);
 
-        if (ItemData == null) {
+        if (ItemData == null)
+        {
             ItemData = new Array<string[]>();
-            foreach (Item item in GetAllItems()) {
+            foreach (Item item in GetAllItems())
+            {
                 ItemData.Add(item.ToText());
             }
         }
@@ -769,7 +780,7 @@ public static class Global
         PrintLine("Thank you for shopping with us");
         PrintEmptyLine();
 
-        string barcodeNum = $"ORD" + $"{lastOrderID}".PadLeft(12-3,'0');
+        string barcodeNum = $"ORD" + $"{lastOrderID}".PadLeft(12 - 3, '0');
         PrintLine($"{barcodeNum}", justification: Justification.MIDDLE);
         PrintBarcode(barcodeNum, 280, 0x41, 2, 80, 0, 0);
 
