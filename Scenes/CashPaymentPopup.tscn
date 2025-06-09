@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://dcl04flixpnhx"]
 
 [ext_resource type="StyleBox" uid="uid://bnur8fsil514a" path="res://TransparentBackground.tres" id="1_3vtt2"]
-[ext_resource type="Script" path="res://Scripts/CashPaymentPopup.cs" id="1_wlns6"]
+[ext_resource type="Script" uid="uid://ban1t6n52u5oe" path="res://Scripts/CashPaymentPopup.cs" id="1_wlns6"]
 [ext_resource type="StyleBox" uid="uid://xqjy03ibbblb" path="res://PanelOpaque.tres" id="2_s88x2"]
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="3_0yr82"]
 [ext_resource type="PackedScene" uid="uid://8vs84j3n71ra" path="res://Scenes/keypad.tscn" id="5_as6gv"]

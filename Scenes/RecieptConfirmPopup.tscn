@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://b867ytgh3p5m"]
 
 [ext_resource type="StyleBox" uid="uid://bnur8fsil514a" path="res://TransparentBackground.tres" id="1_c2061"]
-[ext_resource type="Script" path="res://Scripts/RecieptConfirmPopup.cs" id="1_k4o2o"]
+[ext_resource type="Script" uid="uid://dnc8by78xq8pd" path="res://Scripts/RecieptConfirmPopup.cs" id="1_k4o2o"]
 [ext_resource type="StyleBox" uid="uid://xqjy03ibbblb" path="res://PanelOpaque.tres" id="2_1kvbu"]
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="3_5juna"]
 
