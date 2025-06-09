@@ -110,7 +110,7 @@ theme_override_constants/margin_bottom = 20
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer"]
 layout_mode = 2
 
-[node name="ItemScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer" node_paths=PackedStringArray("totalLabel", "subTotalLabel", "totalGSTLabel", "totalPSTLabel")]
+[node name="ItemScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer" node_paths=PackedStringArray("totalLabel", "subTotalLabel", "totalGSTLabel", "totalPSTLabel", "totalFeeLabel")]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 5.0
@@ -121,6 +121,7 @@ totalLabel = NodePath("../HBoxContainer/GridContainer/Total")
 subTotalLabel = NodePath("../HBoxContainer/GridContainer/SubTotal")
 totalGSTLabel = NodePath("../HBoxContainer/GridContainer/Total GST")
 totalPSTLabel = NodePath("../HBoxContainer/GridContainer/Total PST")
+totalFeeLabel = NodePath("../HBoxContainer/GridContainer/TotalFee")
 
 [node name="Items" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/ItemScrollContainer"]
 layout_mode = 2
@@ -326,6 +327,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="EnterProductPopup" parent="." instance=ExtResource("8_4ga1o")]
+visible = false
 layout_mode = 1
 grow_horizontal = 1
 grow_vertical = 1
