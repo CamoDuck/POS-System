@@ -70,7 +70,7 @@ public static class Global
     public static readonly decimal BOTTLE_DEPOSIT_FEE = 0.10m;
 
     public static decimal Round(decimal value) {
-        return Math.Round(value * 20) / 20;
+        return Math.Round(value * 20, MidpointRounding.AwayFromZero) / 20;
     }
     public static decimal ApplyMarkupAndRound(decimal value)
     {
