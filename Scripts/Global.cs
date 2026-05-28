@@ -3,7 +3,6 @@ using System.Data;
 using System.Linq;
 using Godot;
 using Microsoft.Data.Sqlite;
-using System.IO.Ports;
 using System.Collections.Generic;
 using System.Drawing.Printing;
 
@@ -121,48 +120,93 @@ public static class Global
 
     [Signal] public delegate void BarcodeReadEventHandler(string barcode);
 
-    static System.IO.Ports.SerialPort port = null;
     static List<Action<string>> callbacks = new List<Action<string>>();
+    static readonly object scannerLock = new object();
+    static string scannerBuffer = "";
+    static int scannerBufferVersion = 0;
+    static readonly int scannerClearDelayMs = 1000;
 
-    public static async void ConnectScanner(Action<string> callback)
+    public static void ConnectScanner(Action<string> callback)
     {
         callbacks.Add(callback);
-        if (port == null)
-        {
-            port = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
-            port.DataReceived += new SerialDataReceivedEventHandler(_OnPortDataReceived);
-
-            bool succeed = false;
-            while (!succeed)
-            {
-                try
-                {
-                    port.Open();
-                    succeed = true;
-                    GD.Print("Scanner Connected!");
-                }
-                catch (Exception e)
-                {
-                    GD.PrintErr("Failed to connect to printer. Retrying in 5 seconds");
-                    await Task.Delay(5000);
-                }
-            }
-        }
-
+        GD.Print("Keyboard scanner listener connected!");
     }
 
     public static void DisconnectScannerAll()
     {
-        port.Close();
+        callbacks.Clear();
+        ClearScannerBuffer();
     }
 
-    static void _OnPortDataReceived(object sender, SerialDataReceivedEventArgs e)
+    public static void HandleScannerInput(InputEvent inputEvent)
     {
-        // Show all the incoming data in the port's buffer
-        string barcode = port.ReadExisting();
+        if (inputEvent is not InputEventKey keyEvent || !keyEvent.Pressed || keyEvent.Echo)
+        {
+            return;
+        }
+
+        if (keyEvent.Keycode == Key.Enter || keyEvent.Keycode == Key.KpEnter)
+        {
+            SendBufferedBarcode();
+            return;
+        }
+
+        if (keyEvent.Unicode == 0 || char.IsControl((char)keyEvent.Unicode))
+        {
+            return;
+        }
+
+        int version;
+        lock (scannerLock)
+        {
+            scannerBuffer += char.ConvertFromUtf32((int)keyEvent.Unicode);
+            scannerBufferVersion++;
+            version = scannerBufferVersion;
+        }
+
+        ClearScannerBufferAfterDelay(version);
+    }
+
+    static async void ClearScannerBufferAfterDelay(int version)
+    {
+        await Task.Delay(scannerClearDelayMs);
+
+        lock (scannerLock)
+        {
+            if (scannerBufferVersion == version)
+            {
+                scannerBuffer = "";
+            }
+        }
+    }
+
+    static void SendBufferedBarcode()
+    {
+        string barcode;
+        lock (scannerLock)
+        {
+            barcode = scannerBuffer;
+            scannerBuffer = "";
+            scannerBufferVersion++;
+        }
+
+        if (barcode == "")
+        {
+            return;
+        }
+
         foreach (var callback in callbacks)
         {
             callback(barcode);
+        }
+    }
+
+    static void ClearScannerBuffer()
+    {
+        lock (scannerLock)
+        {
+            scannerBuffer = "";
+            scannerBufferVersion++;
         }
     }
 
