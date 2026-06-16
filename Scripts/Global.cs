@@ -138,22 +138,21 @@ public static class Global
         ClearScannerBuffer();
     }
 
-    public static void HandleScannerInput(InputEvent inputEvent)
+    public static bool HandleScannerInput(InputEvent inputEvent)
     {
         if (inputEvent is not InputEventKey keyEvent || !keyEvent.Pressed || keyEvent.Echo)
         {
-            return;
+            return false;
         }
 
         if (keyEvent.Keycode == Key.Enter || keyEvent.Keycode == Key.KpEnter)
         {
-            SendBufferedBarcode();
-            return;
+            return SendBufferedBarcode();
         }
 
         if (keyEvent.Unicode == 0 || char.IsControl((char)keyEvent.Unicode))
         {
-            return;
+            return false;
         }
 
         int version;
@@ -165,6 +164,7 @@ public static class Global
         }
 
         ClearScannerBufferAfterDelay(version);
+        return false;
     }
 
     static async void ClearScannerBufferAfterDelay(int version)
@@ -180,7 +180,7 @@ public static class Global
         }
     }
 
-    static void SendBufferedBarcode()
+    static bool SendBufferedBarcode()
     {
         string barcode;
         lock (scannerLock)
@@ -192,13 +192,15 @@ public static class Global
 
         if (barcode == "")
         {
-            return;
+            return false;
         }
 
         foreach (var callback in callbacks)
         {
             callback(barcode);
         }
+
+        return true;
     }
 
     static void ClearScannerBuffer()

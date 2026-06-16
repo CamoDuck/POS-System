@@ -50,7 +50,10 @@ public partial class ControlScript : Control
 
     public override void _Input(InputEvent inputEvent)
     {
-        Global.HandleScannerInput(inputEvent);
+        if (Global.HandleScannerInput(inputEvent))
+        {
+            GetViewport().SetInputAsHandled();
+        }
     }
 
     public override void _ExitTree()
