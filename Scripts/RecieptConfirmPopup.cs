@@ -1,11 +1,18 @@
 using Godot;
 using System;
 
-public partial class RecieptConfirmPopup : Control
+public partial class ConfirmPopup : Control
 {
+    [Export] Label contentLabel;
 
-    public void Start()
+    Action YesCallback;
+    Action NoCallback;
+
+    public void Start(string content, Action yesCallback, Action noCallback)
     {
+        YesCallback = yesCallback;
+        NoCallback = noCallback;
+        contentLabel.Text = content;
         Show();
     }
 
@@ -17,14 +24,13 @@ public partial class RecieptConfirmPopup : Control
     void _OnYesPressed()
     {
         Close();
-        Global.PrintReceipt();
-        Global.DeleteAllItems();
+        YesCallback?.Invoke();
     }
 
     void _OnNoPressed()
     {
         Close();
-        Global.DeleteAllItems();
+        NoCallback?.Invoke();
     }
 
 }

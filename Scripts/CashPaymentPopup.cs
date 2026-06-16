@@ -3,7 +3,7 @@ using System;
 
 public partial class CashPaymentPopup : Control
 {
-    [Export] RecieptConfirmPopup recieptConfirmPopup;
+    [Export] ConfirmPopup recieptConfirmPopup;
     [Export] SpinBox cashGiven;
     [Export] Label cashReturn;
     [Export] Keypad keypad;
@@ -31,7 +31,11 @@ public partial class CashPaymentPopup : Control
         Close();
 
         Global.AddCustomerPurchase(true, 1);
-        recieptConfirmPopup.Start();
+        recieptConfirmPopup.Start("Print Receipt?", () =>
+        {
+            Global.PrintReceipt();
+            Global.DeleteAllItems();
+        }, Global.DeleteAllItems);
     }
 
     public void _OnClosePressed()
@@ -44,4 +48,3 @@ public partial class CashPaymentPopup : Control
         Hide();
     }
 }
-

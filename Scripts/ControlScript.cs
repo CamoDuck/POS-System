@@ -15,7 +15,7 @@ public partial class ControlScript : Control
     // [Export] Control barcodeInput;
     [Export] EnterProductPopup enterProductPopup;
     [Export] QuantityPopup quantityPopup;
-    [Export] RecieptConfirmPopup recieptConfirmPopup;
+    [Export] ConfirmPopup recieptConfirmPopup;
 
     [Export] PackedScene ITEM_SCENE;
     [Export] PackedScene DISCOUNT_SCENE;
@@ -214,7 +214,11 @@ public partial class ControlScript : Control
     public void _OnPayCardPressed()
     {
         Global.AddCustomerPurchase(false, 0);
-        recieptConfirmPopup.Start();
+        recieptConfirmPopup.Start("Print Reciept?", () =>
+        {
+            Global.PrintReceipt();
+            Global.DeleteAllItems();
+        }, Global.DeleteAllItems);
     }
 
 }
