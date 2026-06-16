@@ -214,15 +214,18 @@ public partial class Item : Control
         return Global.CalculatePST(quantity, originalPrice, discountPercent, pstEnabled);
     }
 
-    public decimal GetEnvironmentFee() {
-        return environmentalFeeEnabled? Global.ENVIRONMENTAL_FEE: 0;
+    public decimal GetEnvironmentFee()
+    {
+        return environmentalFeeEnabled ? Global.ENVIRONMENTAL_FEE : 0;
     }
 
-    public decimal GetDepositFee() {
-        return bottleDepositFeeEnabled? Global.BOTTLE_DEPOSIT_FEE: 0;
+    public decimal GetDepositFee()
+    {
+        return bottleDepositFeeEnabled ? Global.BOTTLE_DEPOSIT_FEE : 0;
     }
 
-    public decimal GetFees() {
+    public decimal GetFees()
+    {
         return GetDepositFee() + GetEnvironmentFee();
     }
 
@@ -243,12 +246,12 @@ public partial class Item : Control
 
     public string[] ToText()
     {
-        return Global.CreateItemString(name:GetName(), 
-        quantity:GetQuantity(),
-        singleOriginalPrice:GetSingleOriginalPrice(),
-        noDiscountPrice:GetNoDiscountPrice(),
-        subTotalPrice:GetSubTotalPrice(),
-        discount:GetDiscount());
+        return Global.CreateItemString(name: GetName(),
+        quantity: GetQuantity(),
+        singleOriginalPrice: GetSingleOriginalPrice(),
+        noDiscountPrice: GetNoDiscountPrice(),
+        subTotalPrice: GetSubTotalPrice(),
+        discount: GetDiscount());
     }
 
 }

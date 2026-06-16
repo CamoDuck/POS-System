@@ -1,18 +1,18 @@
 [gd_scene load_steps=20 format=3 uid="uid://b3hvcd7tbj6rj"]
 
-[ext_resource type="Script" path="res://Scripts/ControlScript.cs" id="1_aiqpa"]
+[ext_resource type="Script" uid="uid://dwlkwifts7yj4" path="res://Scripts/ControlScript.cs" id="1_aiqpa"]
 [ext_resource type="Texture2D" uid="uid://csv5pcwb0b0ad" path="res://Images/SozaiyaLogoColor.PNG" id="1_ldkee"]
 [ext_resource type="StyleBox" uid="uid://dsc2q7c5sgsmq" path="res://backgroundColor.tres" id="2_byrxm"]
 [ext_resource type="PackedScene" uid="uid://dn21oyihmvulh" path="res://Scenes/Discount.tscn" id="3_qvbo2"]
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="3_uay47"]
 [ext_resource type="PackedScene" uid="uid://6hr5h3xt5ccb" path="res://Scenes/Item.tscn" id="4_rr83q"]
-[ext_resource type="Script" path="res://Scripts/ItemScrollContainer.cs" id="5_x00em"]
+[ext_resource type="Script" uid="uid://b1onwb1os6ttg" path="res://Scripts/ItemScrollContainer.cs" id="5_x00em"]
 [ext_resource type="PackedScene" uid="uid://cvd01j06ajrrl" path="res://Scenes/EnterProductPopup.tscn" id="8_4ga1o"]
 [ext_resource type="StyleBox" uid="uid://cs1y6le03unjk" path="res://RedButton.tres" id="8_afa7q"]
 [ext_resource type="PackedScene" uid="uid://bo8lphkr0246i" path="res://Scenes/QuantityPopup.tscn" id="8_wyh3o"]
 [ext_resource type="PackedScene" uid="uid://bbrrojoxwp5y0" path="res://Scenes/AddItemByNamePopup.tscn" id="11_og3yy"]
 [ext_resource type="PackedScene" uid="uid://dcl04flixpnhx" path="res://Scenes/CashPaymentPopup.tscn" id="12_kr6i1"]
-[ext_resource type="PackedScene" uid="uid://b867ytgh3p5m" path="res://Scenes/RecieptConfirmPopup.tscn" id="13_3kmh5"]
+[ext_resource type="PackedScene" uid="uid://b867ytgh3p5m" path="res://Scenes/ConfirmPopup.tscn" id="13_3kmh5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_21ehd"]
 bg_color = Color(0.231373, 0.478431, 0.384314, 1)
@@ -31,7 +31,7 @@ bg_color = Color(0.231373, 0.47451, 0.384314, 1)
 [sub_resource type="ViewportTexture" id="ViewportTexture_rm8yc"]
 viewport_path = NodePath("VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport")
 
-[node name="Control" type="Control" node_paths=PackedStringArray("itemList", "itemListScroll", "totalLabel", "enterProductPopup", "quantityPopup", "recieptConfirmPopup", "addItemByNamePopup")]
+[node name="Control" type="Control" node_paths=PackedStringArray("itemList", "itemListScroll", "totalLabel", "enterProductPopup", "quantityPopup", "confirmPopup", "addItemByNamePopup")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -45,7 +45,7 @@ itemListScroll = NodePath("VBoxContainer/HBoxContainer/SubViewportContainer/Main
 totalLabel = NodePath("VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport/Item List/MarginContainer/VBoxContainer/HBoxContainer/GridContainer/Total")
 enterProductPopup = NodePath("EnterProductPopup")
 quantityPopup = NodePath("QuantityPopup")
-recieptConfirmPopup = NodePath("RecieptConfirmPopup")
+confirmPopup = NodePath("ConfirmPopup")
 ITEM_SCENE = ExtResource("4_rr83q")
 DISCOUNT_SCENE = ExtResource("3_qvbo2")
 addItemByNamePopup = NodePath("AddItemByNamePopup")
@@ -340,12 +340,12 @@ layout_mode = 1
 visible = false
 layout_mode = 1
 
-[node name="CashPaymentPopup" parent="." node_paths=PackedStringArray("recieptConfirmPopup") instance=ExtResource("12_kr6i1")]
+[node name="CashPaymentPopup" parent="." node_paths=PackedStringArray("confirmPopup") instance=ExtResource("12_kr6i1")]
 visible = false
 layout_mode = 1
-recieptConfirmPopup = NodePath("../RecieptConfirmPopup")
+confirmPopup = NodePath("../ConfirmPopup")
 
-[node name="RecieptConfirmPopup" parent="." instance=ExtResource("13_3kmh5")]
+[node name="ConfirmPopup" parent="." instance=ExtResource("13_3kmh5")]
 visible = false
 layout_mode = 1
 

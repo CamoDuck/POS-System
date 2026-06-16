@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://6hr5h3xt5ccb"]
 
-[ext_resource type="Script" path="res://Scripts/Item.cs" id="1_ocdnd"]
+[ext_resource type="Script" uid="uid://dduq3q613scgr" path="res://Scripts/Item.cs" id="1_ocdnd"]
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="2_x4m2y"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mkldc"]

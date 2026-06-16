@@ -3,7 +3,6 @@ using System.Data;
 using System.Linq;
 using Godot;
 using Microsoft.Data.Sqlite;
-using System.IO.Ports;
 using System.Collections.Generic;
 using System.Drawing.Printing;
 
@@ -120,48 +119,97 @@ public static class Global
 
     [Signal] public delegate void BarcodeReadEventHandler(string barcode);
 
-    static System.IO.Ports.SerialPort port = null;
     static List<Action<string>> callbacks = new List<Action<string>>();
+    static readonly object scannerLock = new object();
+    static string scannerBuffer = "";
+    static int scannerBufferVersion = 0;
+    static readonly int scannerClearDelayMs = 1000;
 
-    public static async void ConnectScanner(Action<string> callback)
+    public static void ConnectScanner(Action<string> callback)
     {
         callbacks.Add(callback);
-        if (port == null)
-        {
-            port = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
-            port.DataReceived += new SerialDataReceivedEventHandler(_OnPortDataReceived);
-            
-            bool succeed = false;
-            while (!succeed) {
-                try {
-                    port.Open();
-                    succeed = true;
-                    GD.Print("Scanner Connected!");
-                }
-                catch (Exception e) {
-                    GD.PrintErr("Failed to connect to printer. Retrying in 5 seconds");
-                    await Task.Delay(5000);
-                }
-            }
-        }
-
+        GD.Print("Keyboard scanner listener connected!");
     }
 
     public static void DisconnectScannerAll()
     {
-        port.Close();
+        callbacks.Clear();
+        ClearScannerBuffer();
     }
 
-    static void _OnPortDataReceived(object sender, SerialDataReceivedEventArgs e)
+    public static bool HandleScannerInput(InputEvent inputEvent)
     {
-        // Show all the incoming data in the port's buffer
-        string barcode = port.ReadExisting();
+        if (inputEvent is not InputEventKey keyEvent || !keyEvent.Pressed || keyEvent.Echo)
+        {
+            return false;
+        }
+
+        if (keyEvent.Keycode == Key.Enter || keyEvent.Keycode == Key.KpEnter)
+        {
+            return SendBufferedBarcode();
+        }
+
+        if (keyEvent.Unicode == 0 || char.IsControl((char)keyEvent.Unicode))
+        {
+            return false;
+        }
+
+        int version;
+        lock (scannerLock)
+        {
+            scannerBuffer += char.ConvertFromUtf32((int)keyEvent.Unicode);
+            scannerBufferVersion++;
+            version = scannerBufferVersion;
+        }
+
+        ClearScannerBufferAfterDelay(version);
+        return false;
+    }
+
+    static async void ClearScannerBufferAfterDelay(int version)
+    {
+        await Task.Delay(scannerClearDelayMs);
+
+        lock (scannerLock)
+        {
+            if (scannerBufferVersion == version)
+            {
+                scannerBuffer = "";
+            }
+        }
+    }
+
+    static bool SendBufferedBarcode()
+    {
+        string barcode;
+        lock (scannerLock)
+        {
+            barcode = scannerBuffer;
+            scannerBuffer = "";
+            scannerBufferVersion++;
+        }
+
+        if (barcode == "")
+        {
+            return false;
+        }
+
         foreach (var callback in callbacks)
         {
             callback(barcode);
         }
+
+        return true;
     }
 
+    static void ClearScannerBuffer()
+    {
+        lock (scannerLock)
+        {
+            scannerBuffer = "";
+            scannerBufferVersion++;
+        }
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // SQL 
@@ -452,11 +500,13 @@ public static class Global
         }
     }
 
-    static public void DeleteItem(Node item) {
+    static public void DeleteItem(Node item)
+    {
         item.QueueFree();
     }
 
-    static public void DeleteAllItems() {
+    static public void DeleteAllItems()
+    {
         SelectAllItems();
         DeleteSelectedItems();
     }
@@ -468,6 +518,16 @@ public static class Global
     static public Godot.Collections.Array<Node> GetAllItems()
     {
         return sceneTree.GetNodesInGroup("Items");
+    }
+
+    static public int GetTotalItemCount()
+    {
+        int total = 0;
+        foreach (Item item in GetAllItems())
+        {
+            total += item.GetQuantity();
+        }
+        return total;
     }
 
     static public Item GetItem(int index)
@@ -658,12 +718,14 @@ public static class Global
 
     static void PrintBytes(byte[] data)
     {
-        try {
+        try
+        {
             string tempFilePath = "printerFile.txt";
             File.WriteAllBytes(tempFilePath, data);
             File.Copy(tempFilePath, printer);
         }
-        catch (Exception e){
+        catch (Exception e)
+        {
             GD.PrintErr(e);
         }
     }
@@ -680,7 +742,8 @@ public static class Global
         }
     }
 
-    static public string[] CreateItemString(string name, int quantity, decimal singleOriginalPrice, decimal noDiscountPrice, decimal subTotalPrice, decimal discount) {
+    static public string[] CreateItemString(string name, int quantity, decimal singleOriginalPrice, decimal noDiscountPrice, decimal subTotalPrice, decimal discount)
+    {
         bool isDiscounted = discount > 0;
         string itemText = $"{name}";
         string quantityText = $"     {quantity} @ {singleOriginalPrice:C}".PadRight(39, ' ') + $"{noDiscountPrice:C}".PadRight(9, ' ');
@@ -690,7 +753,8 @@ public static class Global
         return ret;
     }
 
-    static public void PrintReceiptFromData(int purchaseId) {
+    static public void PrintReceiptFromData(int purchaseId)
+    {
         const int columnCount = 9;
         string sql =
         @$"DROP TABLE IF EXISTS CPITemp;
@@ -720,18 +784,18 @@ public static class Global
             bool hasPST = Convert.ToBoolean(rows[6]);
             bool hasEnviroFee = Convert.ToBoolean(rows[7]);
             bool hasbottleDeposit = Convert.ToBoolean(rows[8]);
-            items.Add(CreateItemString(name:name,
-            quantity:quantity,
+            items.Add(CreateItemString(name: name,
+            quantity: quantity,
             singleOriginalPrice: price,
             noDiscountPrice: price * quantity,
-            subTotalPrice: CalculateTotal(quantity,price,hasGST,hasPST,hasEnviroFee,hasbottleDeposit),
-            discount:discount));
+            subTotalPrice: CalculateTotal(quantity, price, hasGST, hasPST, hasEnviroFee, hasbottleDeposit),
+            discount: discount));
         }
 
         PrintReceipt(items);
     }
 
-    static public void PrintReceipt(Array<string[]> ItemData=null)
+    static public void PrintReceipt(Array<string[]> ItemData = null)
     {
         SetLineSpacing(5);
 
@@ -742,9 +806,11 @@ public static class Global
         PrintLine("Authentic Japanese Goods", 0, Justification.MIDDLE);
         PrintEmptyLine(2);
 
-        if (ItemData == null) {
+        if (ItemData == null)
+        {
             ItemData = new Array<string[]>();
-            foreach (Item item in GetAllItems()) {
+            foreach (Item item in GetAllItems())
+            {
                 ItemData.Add(item.ToText());
             }
         }
@@ -769,7 +835,7 @@ public static class Global
         PrintLine("Thank you for shopping with us");
         PrintEmptyLine();
 
-        string barcodeNum = $"ORD" + $"{lastOrderID}".PadLeft(12-3,'0');
+        string barcodeNum = $"ORD" + $"{lastOrderID}".PadLeft(12 - 3, '0');
         PrintLine($"{barcodeNum}", justification: Justification.MIDDLE);
         PrintBarcode(barcodeNum, 280, 0x41, 2, 80, 0, 0);
 
