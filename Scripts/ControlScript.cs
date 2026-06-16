@@ -210,4 +210,8 @@ public partial class ControlScript : Control
         recieptConfirmPopup.Start();
     }
 
+    public void _OnPrintLastReceiptPressed() {
+        Global.PrintPreviousReceipt();
+    }
+
 }

@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://cvd01j06ajrrl"]
 
-[ext_resource type="Script" path="res://Scripts/EnterProductPopup.cs" id="1_fypxt"]
+[ext_resource type="Script" path="res://Images/EnterProductPopup.cs" id="1_fypxt"]
 [ext_resource type="StyleBox" uid="uid://bnur8fsil514a" path="res://TransparentBackground.tres" id="1_neoy3"]
 [ext_resource type="StyleBox" uid="uid://xwjgrwabjh1p" path="res://ErrorInput.tres" id="2_6hkfg"]
 [ext_resource type="StyleBox" uid="uid://xqjy03ibbblb" path="res://PanelOpaque.tres" id="4_biw26"]

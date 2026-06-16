@@ -101,6 +101,10 @@ public static class Global
         return CalculateTotal(stock, newPrice, isGST, isPST, isEnvironmentalFee, isBottleDepositFee);
     }
 
+    public static decimal CalculateSubTotal(int stock, decimal originalPrice) {
+        return CalculateTotal(stock, originalPrice, false, false, false, false);
+    }
+
     public static decimal CalculateTotal(int stock, decimal originalPrice, bool isGST, bool isPST, bool isEnvironmentalFee, bool isBottleDepositFee)
     {
         decimal gst = isGST ? originalPrice * GST_PRECENT : 0;
@@ -286,6 +290,10 @@ public static class Global
             return null;
         }
         return data;
+    }
+
+    static object QueryAndReadValue(string sql) {
+        return QueryAndRead(sql, 1, 1)[0][0];
     }
 
     public static Product GetProductByBarcode(string barcodeID)
@@ -690,6 +698,17 @@ public static class Global
         return ret;
     }
 
+    static public void PrintPreviousReceipt(int previousCount = 0) {
+        string sql = @$"SELECT MAX(Id)
+        FROM CustomerPurchase;";
+
+        int maxPurchaseId = Convert.ToInt32(QueryAndReadValue(sql));
+        int purchaseIdToPrint = maxPurchaseId - previousCount;
+        if (purchaseIdToPrint < 0) throw new Exception("Id given is < 0");
+
+        PrintReceiptFromData(purchaseIdToPrint);
+    }
+
     static public void PrintReceiptFromData(int purchaseId) {
         const int columnCount = 9;
         string sql =
@@ -699,7 +718,8 @@ public static class Global
             CREATE TABLE CPITemp AS
             SELECT ItemId AS Id, Discount, Price, Quantity
             FROM CustomerPurchaseItem
-            WHERE PurchaseId = {purchaseId};
+            WHERE PurchaseId = {purchaseId}
+            ORDER BY ROWID;
 
             CREATE TABLE ProductTemp AS
             SELECT Id, Name, GST, PST, EnviromentalFee, BottleDepositFee
@@ -709,36 +729,52 @@ public static class Global
             FROM CPITemp NATURAL JOIN ProductTemp;";
 
         List<List<object>> rows = QueryAndRead(sql, columnCount);
-        Array<string[]> items = new Array<string[]>();
-        if (rows != null && rows.Count > 0)
+        Array<string[]> receiptText = new Array<string[]>();
+        decimal totalListPrice = 0;
+        decimal subtotalListPrice = 0;
+        foreach (List<object> item in rows)
         {
-            decimal discount = Convert.ToDecimal(rows[1]);
-            decimal price = Convert.ToDecimal(rows[2]);
-            int quantity = Convert.ToInt32(rows[3]);
-            string name = Convert.ToString(rows[4]);
-            bool hasGST = Convert.ToBoolean(rows[5]);
-            bool hasPST = Convert.ToBoolean(rows[6]);
-            bool hasEnviroFee = Convert.ToBoolean(rows[7]);
-            bool hasbottleDeposit = Convert.ToBoolean(rows[8]);
-            items.Add(CreateItemString(name:name,
-            quantity:quantity,
+            decimal discount = Convert.ToDecimal(item[1]);
+            decimal price = Convert.ToDecimal(item[2]);
+            int quantity = Convert.ToInt32(item[3]);
+            string name = Convert.ToString(item[4]);
+            bool hasGST = Convert.ToBoolean(item[5]);
+            bool hasPST = Convert.ToBoolean(item[6]);
+            bool hasEnviroFee = Convert.ToBoolean(item[7]);
+            bool hasbottleDeposit = Convert.ToBoolean(item[8]);
+            decimal subtotalPrice = CalculateSubTotal(quantity, price);
+            decimal totalPrice = CalculateTotal(quantity, price, hasGST, hasPST, hasEnviroFee,hasbottleDeposit);
+
+            subtotalListPrice += subtotalPrice;
+            totalListPrice += totalPrice;
+
+            receiptText.Add(CreateItemString(name: name,
+            quantity: quantity,
             singleOriginalPrice: price,
             noDiscountPrice: price * quantity,
-            subTotalPrice: CalculateTotal(quantity,price,hasGST,hasPST,hasEnviroFee,hasbottleDeposit),
-            discount:discount));
+            subTotalPrice: subtotalPrice,
+            discount: discount));
+
         }
 
-        PrintReceipt(items);
+        PrintReceipt(receiptText, totalListPrice, subtotalListPrice);
     }
 
-    static public void PrintReceipt(Array<string[]> ItemData=null)
+    static public void PrintReceipt(
+        Array<string[]> ItemData=null,
+        decimal? total=null,
+        decimal? subtotal=null)
     {
+        if (total == null) { total = Global.total; }
+        if (subtotal == null) { subtotal = Global.subtotal; }
+
         SetLineSpacing(5);
 
         PrintLine("SOZAIYA", 1, Justification.MIDDLE);
         PrintLine("2906 EAST 2ND AVE", 0, Justification.MIDDLE);
         PrintLine("VANCOUVER, BC V5M 1E6", 0, Justification.MIDDLE);
         PrintLine("INSTAGRAM.COM/SozaiyaCanada", 0, Justification.MIDDLE);
+        PrintLine("sozaiyacanada@gmail.com", 0, Justification.MIDDLE);
         PrintLine("Authentic Japanese Goods", 0, Justification.MIDDLE);
         PrintEmptyLine(2);
 
@@ -748,6 +784,19 @@ public static class Global
                 ItemData.Add(item.ToText());
             }
         }
+
+        // string printString = "";
+        // foreach (string[] row in ItemData)
+        // {
+        //     foreach (string text in row)
+        //     {
+        //         printString += text;
+        //     }
+        //     printString += "\n";
+        // }
+        // GD.Print(printString);
+
+        // return;
 
         // Print items
         foreach (string[] texts in ItemData)
@@ -773,7 +822,10 @@ public static class Global
         PrintLine($"{barcodeNum}", justification: Justification.MIDDLE);
         PrintBarcode(barcodeNum, 280, 0x41, 2, 80, 0, 0);
 
-        PrintEmptyLine(2);
+        PrintEmptyLine();
+        PrintLine("ALL SALES ARE FINAL - NO EXCHANGES OR REFUNDS", 0, Justification.MIDDLE);
+        PrintEmptyLine();
+
         CutPaper();
     }
 

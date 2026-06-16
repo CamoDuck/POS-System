@@ -87,7 +87,7 @@ stretch = true
 
 [node name="MainSubViewport" type="SubViewport" parent="VBoxContainer/HBoxContainer/SubViewportContainer"]
 handle_input_locally = false
-size = Vector2i(765, 540)
+size = Vector2i(712, 540)
 render_target_update_mode = 4
 
 [node name="Item List" type="PanelContainer" parent="VBoxContainer/HBoxContainer/SubViewportContainer/MainSubViewport"]
@@ -229,6 +229,13 @@ theme_override_font_sizes/font_size = 15
 text = "10% Discount
 "
 
+[node name="12PercentDiscount2" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+text = "12% Discount
+"
+
 [node name="25PercentDiscount" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -290,11 +297,11 @@ text = "DELETE"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HBoxContainer10" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
+[node name="HBoxContainer12" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Select All" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer10"]
+[node name="Open Drawer" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer12"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 15
@@ -305,6 +312,28 @@ text = "Open Drawer
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 6.0
+
+[node name="HBoxContainer10" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Print Last Receipt" type="Button" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer10"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/focus = ExtResource("8_afa7q")
+theme_override_styles/hover = ExtResource("8_afa7q")
+theme_override_styles/pressed = ExtResource("8_afa7q")
+theme_override_styles/normal = ExtResource("8_afa7q")
+text = "Print Last Receipt"
+
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer11" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="HBoxContainer8" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer"]
 layout_mode = 2
@@ -430,12 +459,14 @@ stretch_mode = 4
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/AddItemByName" to="." method="_OnAddItemByNameButtonPressed" binds= [0]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer/Edit Item" to="." method="_OnAddItemByNameButtonPressed" binds= [1]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/10PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [10]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/12PercentDiscount2" to="." method="_OnDiscountButtonPressed" binds= [12]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/25PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [25]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer3/50PercentDiscount" to="." method="_OnDiscountButtonPressed" binds= [50]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer4/RemoveDiscount" to="." method="_OnDiscountButtonPressed" binds= [0]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Select All" to="." method="_SelectAllButtonPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/DeSelect All" to="." method="_DeSelectAllButtonPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer6/Delete" to="." method="_DeleteButtonPressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer10/Select All" to="." method="_OnOpenDrawerPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer12/Open Drawer" to="." method="_OnOpenDrawerPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer10/Print Last Receipt" to="." method="_OnPrintLastReceiptPressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer8/Pay Cash" to="CashPaymentPopup" method="_OnStartButtonClick"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Control Panel/VBoxContainer/HBoxContainer8/Pay Card" to="." method="_OnPayCardPressed"]
