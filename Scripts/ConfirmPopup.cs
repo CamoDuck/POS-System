@@ -3,7 +3,7 @@ using System;
 
 public partial class ConfirmPopup : Control
 {
-    [Export] Label contentLabel;
+    [Export] RichTextLabel contentLabel;
 
     Action YesCallback;
     Action NoCallback;

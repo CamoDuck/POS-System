@@ -521,6 +521,16 @@ public static class Global
         return sceneTree.GetNodesInGroup("Items");
     }
 
+    static public int GetTotalItemCount()
+    {
+        int total = 0;
+        foreach (Item item in GetAllItems())
+        {
+            total += item.GetQuantity();
+        }
+        return total;
+    }
+
     static public Item GetItem(int index)
     {
         Node[] items = sceneTree.GetNodesInGroup("Items").ToArray();

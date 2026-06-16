@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://dcl04flixpnhx"]
+[gd_scene load_steps=10 format=3 uid="uid://dcl04flixpnhx"]
 
 [ext_resource type="StyleBox" uid="uid://bnur8fsil514a" path="res://TransparentBackground.tres" id="1_3vtt2"]
 [ext_resource type="Script" uid="uid://ban1t6n52u5oe" path="res://Scripts/CashPaymentPopup.cs" id="1_wlns6"]
 [ext_resource type="StyleBox" uid="uid://xqjy03ibbblb" path="res://PanelOpaque.tres" id="2_s88x2"]
 [ext_resource type="LabelSettings" uid="uid://ctpcahcuer5j1" path="res://labelSettings.tres" id="3_0yr82"]
 [ext_resource type="PackedScene" uid="uid://8vs84j3n71ra" path="res://Scenes/keypad.tscn" id="5_as6gv"]
+[ext_resource type="PackedScene" uid="uid://b867ytgh3p5m" path="res://Scenes/ConfirmPopup.tscn" id="6_q758y"]
 
 [sub_resource type="Theme" id="Theme_65wde"]
 
@@ -14,7 +15,7 @@ font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="Theme" id="Theme_sd5s6"]
 
-[node name="CashPaymentPopup" type="Control" node_paths=PackedStringArray("cashGiven", "cashReturn", "keypad")]
+[node name="CashPaymentPopup" type="Control" node_paths=PackedStringArray("confirmPopup", "cashGiven", "cashReturn", "keypad")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,6 +23,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_wlns6")
+confirmPopup = NodePath("ConfirmPopup")
 cashGiven = NodePath("Panel/Panel/VBoxContainer/CashGiven")
 cashReturn = NodePath("Panel/Panel/VBoxContainer/CashReturn")
 keypad = NodePath("Panel/Panel/VBoxContainer/Keypad")
@@ -102,6 +104,10 @@ text = "Confirm
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Cancel"
+
+[node name="ConfirmPopup" parent="." instance=ExtResource("6_q758y")]
+visible = false
+layout_mode = 1
 
 [connection signal="value_changed" from="Panel/Panel/VBoxContainer/CashGiven" to="." method="_OnValueChanged"]
 [connection signal="pressed" from="Panel/Panel/VBoxContainer/HBoxContainer/Confirm" to="." method="_OnConfirmPressed"]
